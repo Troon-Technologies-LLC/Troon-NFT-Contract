@@ -21,7 +21,6 @@ Schemas are used to define a data structure of NFT. Schema is like an interface 
 - Address
 - Array
 - Any
-- extra
 
 ## Template
 
