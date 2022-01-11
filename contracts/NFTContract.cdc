@@ -250,7 +250,7 @@ pub contract NFTContract : NonFungibleToken {
     pub resource interface NFTMethodsCapability {
         pub fun createNewBrand(brandName:String, data:{String:String})
         pub fun updateBrandData(brandId:UInt64, data:{String:String})
-        pub fun createSchema(schemaName : String , format:{String:SchemaType}, author:Address)
+        pub fun createSchema(schemaName : String , format:{String:SchemaType})
         pub fun createTemplate(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64,  immutableData: {String:AnyStruct})
         pub fun mintNFT(templateId:UInt64, account:Address)
     }
@@ -301,16 +301,16 @@ pub contract NFTContract : NonFungibleToken {
             emit BrandUpdated(brandId:brandId, brandName:oldBrand!.brandName, author:oldBrand!.author, data:data)
         }
 
-        pub fun createSchema(schemaName: String, format: {String: SchemaType}, author:Address){
+        pub fun createSchema(schemaName: String, format: {String: SchemaType}){
             pre {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
             }
-            let newSchema = Schema(schemaName: schemaName, author: author, format: format)
+            let newSchema = Schema(schemaName: schemaName, author: self.owner?.address!, format: format)
             NFTContract.allSchemas[NFTContract.lastIssuedSchemaId] = newSchema
             self.ownedSchemas[NFTContract.lastIssuedSchemaId] = newSchema
-            emit SchemaCreated(schemaId: NFTContract.lastIssuedSchemaId, schemaName: schemaName, author: author)
+            emit SchemaCreated(schemaId: NFTContract.lastIssuedSchemaId, schemaName: schemaName, author: self.owner?.address!)
         }
 
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64,maxSupply: UInt64, immutableData: {String:AnyStruct}){
@@ -409,8 +409,6 @@ pub contract NFTContract : NonFungibleToken {
         self.CollectionPublicPath = /public/TroonCollection
 
         self.NFTMethodsCapabilityPrivatePath = /private/NFTMethodsCapability
-        self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
-        self.account.link<&{NFTMethodsCapability}>(self.NFTMethodsCapabilityPrivatePath, target: self.AdminResourceStoragePath)
 
         emit ContractInitialized()
     }

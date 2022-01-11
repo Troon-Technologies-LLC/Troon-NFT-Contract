@@ -250,7 +250,7 @@ describe("Transactions", () => {
       name,
       addressMap,
     });
-    const args = ["Test Schema", Charlie];
+    const args = ["Test Schema"];
 
     let txResult;
     try {
