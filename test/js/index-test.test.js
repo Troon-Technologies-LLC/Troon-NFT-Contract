@@ -4,7 +4,7 @@ import { init, emulator, getAccountAddress, deployContractByName, getContractCod
 jest.setTimeout(10000);
 
 beforeAll(async () => {
-  const basePath = path.resolve(__dirname, "../../Cadence");
+  const basePath = path.resolve(__dirname, "../..");
   const port = 8080;
 
   await init(basePath, { port });

@@ -7,6 +7,4 @@ pub fun main(address: Address):[UInt64]{
                            .borrow<&{NonFungibleToken.CollectionPublic}>()
                             ??panic("could not borrow receiver Reference ")
     return  acct1Capability.getIDs()
-
-
 }

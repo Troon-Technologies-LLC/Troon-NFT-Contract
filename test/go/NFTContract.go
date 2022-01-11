@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	nowwhereRootPath                  = "../../Cadence"
+	nowwhereRootPath                  = "../.."
 	NFTContractPath                   = nowwhereRootPath + "/contracts/NFTContract.cdc"
 	NowwhereContractPath              = nowwhereRootPath + "/contracts/NowwhereContract.cdc"
 	NFTContractTransferTokensPath     = nowwhereRootPath + "/transactions/transferNFT.cdc"

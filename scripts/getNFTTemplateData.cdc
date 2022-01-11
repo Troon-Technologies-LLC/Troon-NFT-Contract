@@ -11,7 +11,6 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
 
     var dict : {UInt64: AnyStruct} = {}
 
-
     for nftId in nftIds {
         var nftData = NFTContract.getNFTDataById(nftId: nftId)
         var templateDataById =  NFTContract.getTemplateById(templateId: nftData.templateID)
@@ -21,11 +20,7 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
         nftMetaData["templateId"] =nftData.templateID;
         nftMetaData["mintNumber"] =nftData.mintNumber;
         nftMetaData["templateData"] = templateDataById;
-
-
         dict.insert(key: nftId,nftMetaData)
     }
     return dict
-
-
 }
