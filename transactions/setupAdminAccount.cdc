@@ -26,5 +26,5 @@ transaction() {
         // create a public capability for the Collection
         signer.link<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath, target:NFTContract.CollectionStoragePath)
         log("Capability created")
-      }
+    }
 }

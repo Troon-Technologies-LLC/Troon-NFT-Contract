@@ -13,10 +13,8 @@ pub contract NFTContract : NonFungibleToken {
     pub event SchemaCreated(schemaId:UInt64, schemaName:String, author:Address)
     pub event TemplateCreated(templateId:UInt64, brandId:UInt64, schemaId:UInt64, maxSupply:UInt64)
 
-    pub let AdminStoragePath: StoragePath
     pub let AdminResourceStoragePath: StoragePath
-
-    pub let SpecialCapabilityPrivatePath: PrivatePath
+    
     pub let NFTMethodsCapabilityPrivatePath: PrivatePath
 
     pub let CollectionStoragePath: StoragePath
@@ -174,7 +172,6 @@ pub contract NFTContract : NonFungibleToken {
             pre {
                 self.issuedSupply  < self.maxSupply: "Template reached max supply"
             }   
-           
             self.issuedSupply = self.issuedSupply + 1            
             return self.issuedSupply        
         }
@@ -187,25 +184,8 @@ pub contract NFTContract : NonFungibleToken {
         init(templateID:UInt64, mintNumber:UInt64){
             self.templateID = templateID
             self.mintNumber = mintNumber
-
         }
 
-    }
-
-    pub resource interface SpecialCapability {
-        // Admin having Special Capability to create Collection, Schema and Transaction
-    }
-
-    pub resource interface UserSpecialCapability {
-        pub fun addCapability(cap: Capability<&{SpecialCapability}>)
-    }
-
-    pub resource interface NFTMethodsCapability {
-        pub fun createNewBrand(brandName:String, data:{String:String})
-        pub fun updateBrandData(brandId:UInt64, data:{String:String})
-        pub fun createSchema(schemaName : String , format:{String:SchemaType}, author:Address)
-        pub fun createTemplate(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64,  immutableData: {String:AnyStruct})
-        pub fun mintNFT(templateId:UInt64, account:Address)
     }
 
     pub resource NFT: NonFungibleToken.INFT {
@@ -263,10 +243,16 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
-    pub resource Admin: SpecialCapability{     
-        pub fun checkCap(): Bool {
-            return true
-        } 
+    pub resource interface UserSpecialCapability {
+        pub fun addCapability(cap: Capability<&{NFTMethodsCapability}>)
+    }
+
+    pub resource interface NFTMethodsCapability {
+        pub fun createNewBrand(brandName:String, data:{String:String})
+        pub fun updateBrandData(brandId:UInt64, data:{String:String})
+        pub fun createSchema(schemaName : String , format:{String:SchemaType}, author:Address)
+        pub fun createTemplate(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64,  immutableData: {String:AnyStruct})
+        pub fun mintNFT(templateId:UInt64, account:Address)
     }
     
     pub resource AdminResource : UserSpecialCapability, NFTMethodsCapability {
@@ -274,10 +260,10 @@ pub contract NFTContract : NonFungibleToken {
         priv var ownedBrands : {UInt64:Brand}
         priv var ownedSchemas : {UInt64:Schema}
         priv var ownedTemplates : {UInt64:Template}
-        access(contract) var capability: Capability<&{SpecialCapability}>?
+        access(contract) var capability: Capability<&{NFTMethodsCapability}>?
         // this is the addCapability method that the Admin owner calls
         // to add the SpecialCapability to the AdminResource
-        pub fun addCapability(cap: Capability<&{SpecialCapability}>) {
+        pub fun addCapability(cap: Capability<&{NFTMethodsCapability}>) {
             pre {
                 // we make sure the SpecialCapability is 
                 // valid before executing the method
@@ -289,7 +275,7 @@ pub contract NFTContract : NonFungibleToken {
         }
 
         pub fun createNewBrand(brandName:String, data:{String:String}){
-           pre {
+            pre {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
@@ -357,7 +343,6 @@ pub contract NFTContract : NonFungibleToken {
             var newNFT: @NFT <- create NFT(templateID:templateId,mintNumber:NFTContract.allTemplates[templateId]!.incrementIssuedSupply())  
             recipientCollection.deposit(token: <-newNFT)
         }
-     
         init(){
             self.ownedBrands = {}
             self.ownedSchemas = {}
@@ -409,7 +394,6 @@ pub contract NFTContract : NonFungibleToken {
     pub fun getNFTDataById(nftId:UInt64):NFTData{
         return NFTContract.allNFTs[nftId]!
     }
-   
     init(){
         self.lastIssuedBrandId = 0
         self.lastIssuedSchemaId = 0
@@ -420,14 +404,13 @@ pub contract NFTContract : NonFungibleToken {
         self.allTemplates = {}
         self.allNFTs = {}
 
-        self.AdminStoragePath = /storage/TroonAdmin
         self.AdminResourceStoragePath = /storage/TroonAdminResource  
         self.CollectionStoragePath = /storage/TroonCollection
         self.CollectionPublicPath = /public/TroonCollection
-        self.SpecialCapabilityPrivatePath = /private/TroonSpecialCapability
-        self.NFTMethodsCapabilityPrivatePath = /private/TroonMethodsCapability
-        self.account.save<@Admin>(<- create Admin(), to: self.AdminStoragePath)
-        self.account.link<&{SpecialCapability}>(  self.SpecialCapabilityPrivatePath, target: self.AdminStoragePath)
+
+        self.NFTMethodsCapabilityPrivatePath = /private/NFTMethodsCapability
+        self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
+        self.account.link<&{NFTMethodsCapability}>(self.NFTMethodsCapabilityPrivatePath, target: self.AdminResourceStoragePath)
 
         emit ContractInitialized()
     }
