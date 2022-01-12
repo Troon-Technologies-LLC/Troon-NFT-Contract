@@ -409,6 +409,8 @@ pub contract NFTContract : NonFungibleToken {
         self.CollectionPublicPath = /public/TroonCollection
 
         self.NFTMethodsCapabilityPrivatePath = /private/NFTMethodsCapability
+        self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
+        self.account.link<&{NFTMethodsCapability}>(self.NFTMethodsCapabilityPrivatePath, target: self.AdminResourceStoragePath)
 
         emit ContractInitialized()
     }

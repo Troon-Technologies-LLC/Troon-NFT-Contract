@@ -3,19 +3,20 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 
 transaction() {
     prepare(signer: AuthAccount) {
-        let adminResouce <- NFTContract.createAdminResource()
         // save the resource to the signer's account storage
-        signer.save(<- adminResouce, to: NFTContract.AdminResourceStoragePath)
-
+        log(signer.getLinkTarget(NFTContract.NFTMethodsCapabilityPrivatePath))
+        if signer.getLinkTarget(NFTContract.NFTMethodsCapabilityPrivatePath) == nil {
+            let adminResouce <- NFTContract.createAdminResource()
+            signer.save(<- adminResouce, to: NFTContract.AdminResourceStoragePath)
+            // link the UnlockedCapability in private storage
+            signer.link<&{NFTContract.NFTMethodsCapability}>(
+                NFTContract.NFTMethodsCapabilityPrivatePath,
+                target: NFTContract.AdminResourceStoragePath
+            )
+        }
 
         signer.link<&{NFTContract.UserSpecialCapability}>(
             /public/UserSpecialCapability,
-            target: NFTContract.AdminResourceStoragePath
-        )
-
-        // link the UnlockedCapability in private storage
-        signer.link<&{NFTContract.NFTMethodsCapability}>(
-            NFTContract.NFTMethodsCapabilityPrivatePath,
             target: NFTContract.AdminResourceStoragePath
         )
 
@@ -26,5 +27,5 @@ transaction() {
         // create a public capability for the Collection
         signer.link<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath, target:NFTContract.CollectionStoragePath)
         log("Capability created")
-    }
+      }
 }
