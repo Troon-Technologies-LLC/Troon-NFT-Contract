@@ -437,10 +437,8 @@ func CreateSchema_Transaction(
 		SetPayer(emulator.ServiceKey().Address).
 		AddAuthorizer(userAddress)
 	schema, _ := cadence.NewString(schemaName)
-	author := cadence.NewAddress(userAddress)
 
 	_ = tx.AddArgument(schema)
-	_ = tx.AddArgument(author)
 
 	signAndSubmit(
 		testing, emulator, tx,

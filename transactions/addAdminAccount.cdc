@@ -1,10 +1,11 @@
 import NFTContract from "./NFTContract.cdc"
 import NonFungibleToken from "./NonFungibleToken.cdc"
 
-transaction(Admin: Address) {
+transaction(admin:Address) {
     prepare(signer: AuthAccount) {
+
         // get the public account object for the Admin
-        let TemplateAdminAccount = getAccount(Admin)
+        let TemplateAdminAccount = getAccount(admin)
 
         // get the public capability from the Admin's public storage
         let TemplateAdminResource = TemplateAdminAccount.getCapability
@@ -17,8 +18,8 @@ transaction(Admin: Address) {
         // this will be the signer of this transaction
         //
         let specialCapability = signer.getCapability
-            <&{NFTContract.SpecialCapability}>
-            (NFTContract.SpecialCapabilityPrivatePath) 
+            <&{NFTContract.NFTMethodsCapability}>
+            (NFTContract.NFTMethodsCapabilityPrivatePath) 
 
         // if the special capability is valid...
         if specialCapability.check() {
