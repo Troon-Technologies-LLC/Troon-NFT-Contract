@@ -81,40 +81,6 @@ describe("Deployment", () => {
   });
 });
 describe("Transactions", () => {
-  test("test transaction setup Account", async () => {
-    const name = "setupAccount";
-
-    // Import participating accounts
-    const Bob = await getAccountAddress("Bob");
-
-    // Set transaction signers
-    const signers = [Bob];
-
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
-    const addressMap = {
-      NonFungibleToken,
-      NFTContract,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-      txResult = await sendTransaction({
-        code,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-
-    // expect(txResult.errorMessage).toBe("");
-  });
   test("test transaction setup admin Account", async () => {
     const name = "setupAdminAccount";
 
@@ -150,7 +116,6 @@ describe("Transactions", () => {
 
     // expect(txResult.errorMessage).toBe("");
   });
-
   test("test transaction add admin Account", async () => {
     const name = "addAdminAccount";
 
@@ -190,7 +155,6 @@ describe("Transactions", () => {
 
     // expect(txResult.errorMessage).toBe("");
   });
-
   test("test transaction  create brand", async () => {
     const name = "createBrand";
 
@@ -228,7 +192,6 @@ describe("Transactions", () => {
 
     // expect(txResult.errorMessage).toBe("");
   });
-
   test("test transaction  create Schema", async () => {
     const name = "createSchema";
 
@@ -303,6 +266,45 @@ describe("Transactions", () => {
 
     // expect(txResult.errorMessage).toBe("");
   });
+  test("test transaction  mint NFT", async () => {
+    const name = "mintNFT";
+
+    // Import participating accounts
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Charlie];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTContract = await getContractAddress("NFTContract");
+    const addressMap = {
+      NonFungibleToken,
+      NFTContract,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+    // brandId, schemaId, maxSupply,immutableData
+    const args = [1, Charlie];
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+        args,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
+
+
 
 })
 describe("Scripts", () => {
@@ -464,9 +466,9 @@ describe("Scripts", () => {
       const name = accounts[match];
       return `getAccount(${name})`;
     });
-  
 
-    console.log(typeof(myInt))
+
+    console.log(typeof (myInt))
     const args = [1];
     const result = await executeScript({
       code,
@@ -475,7 +477,7 @@ describe("Scripts", () => {
     console.log("result", result);
 
   });
-  
+
   test("get template data ", async () => {
 
     const name = "getAllTemplates";
@@ -533,7 +535,7 @@ describe("Scripts", () => {
       const name = accounts[match];
       return `getAccount(${name})`;
     });
-    const args=[1]
+    const args = [1]
     const result = await executeScript({
       code,
       args,
@@ -541,7 +543,7 @@ describe("Scripts", () => {
     console.log("result", result);
 
   });
- 
+
 
   test("get all nfts  data", async () => {
 
@@ -602,7 +604,7 @@ describe("Scripts", () => {
       return `getAccount(${name})`;
     });
 
-      const args = [Charlie]
+    const args = [Charlie]
     const result = await executeScript({
       code,
       args,
@@ -610,5 +612,5 @@ describe("Scripts", () => {
     console.log("result", result);
 
   });
-  
+
 });

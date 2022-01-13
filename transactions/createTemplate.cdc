@@ -1,5 +1,5 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64,immutableData:{String: AnyStruct}) {
      prepare(acct: AuthAccount) {
@@ -11,6 +11,5 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64,immutableData:{Str
             panic("could not borrow a reference to the NFTMethodsCapability interface")
 
         actorResource.createTemplate(brandId: brandId, schemaId: schemaId, maxSupply: maxSupply, immutableData: immutableData)
-        log("Template created")
     }
 }

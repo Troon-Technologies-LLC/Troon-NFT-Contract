@@ -1,5 +1,5 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 // This transaction transfers a template to a recipient
 // This transaction is how a  user would transfer an NFT

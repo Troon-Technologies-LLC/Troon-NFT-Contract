@@ -1,5 +1,6 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 
 pub fun main(address: Address) : {UInt64: AnyStruct}{
     let account1 = getAccount(address)
@@ -16,8 +17,7 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
         var templateDataById =  NFTContract.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
-
-        nftMetaData["templateId"] =nftData.templateID;
+        
         nftMetaData["mintNumber"] =nftData.mintNumber;
         nftMetaData["templateData"] = templateDataById;
         dict.insert(key: nftId,nftMetaData)

@@ -1,5 +1,6 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 
 transaction (brandId:UInt64,brandName:String){
   prepare(acct: AuthAccount) {
@@ -15,7 +16,5 @@ transaction (brandId:UInt64,brandName:String){
       data:  {
           "brandName":brandName
       })
-    log("brand data updated")
-
   }
 }
