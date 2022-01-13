@@ -205,7 +205,8 @@ pub contract NFTContract : NonFungibleToken {
 
     }
 
-    // A resource NFT, 
+    // The resource that represents the Troon NFTs
+    // 
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
         access(contract) let data: NFTData
@@ -222,7 +223,9 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
-    // A resouce Collection,  
+    // Collection is a resource that every user who owns NFTs 
+    // will store in their account to manage their NFTS
+    //
     pub resource Collection : NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic{    
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
