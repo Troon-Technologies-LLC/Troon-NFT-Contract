@@ -60,18 +60,16 @@ pub contract NFTContract : NonFungibleToken {
         pub let brandId : UInt64
         pub let brandName : String
         pub let author : Address
-        pub var data : {String: String}
+        access(contract) var data : {String: String}
         
         init(brandName:String, author: Address, data:{String:String}){
             pre{
                 brandName.length > 0: "Brand name is required";
             }
-            let newBrandId = NFTContract.lastIssuedBrandId + 1
-            self.brandId = newBrandId
+            self.brandId = NFTContract.lastIssuedBrandId
             self.brandName = brandName
             self.author = author
             self.data = data
-            NFTContract.lastIssuedBrandId = newBrandId
         }
         pub fun update(data:{String:String}){
             self.data = data
@@ -83,18 +81,16 @@ pub contract NFTContract : NonFungibleToken {
         pub let schemaId: UInt64
         pub let schemaName: String
         pub let author:Address
-        pub let format: {String:SchemaType}
+        access(contract) let format: {String:SchemaType}
 
         init(schemaName : String, author:Address, format:{String:SchemaType}){
             pre{
                 schemaName.length> 0 : "Could not create schema: name is required"
             }
-            let newSchemaId = NFTContract.lastIssuedSchemaId + 1
-            self.schemaId = newSchemaId
+            self.schemaId = NFTContract.lastIssuedSchemaId
             self.schemaName = schemaName
             self.author = author      
             self.format = format
-            NFTContract.lastIssuedSchemaId = NFTContract.lastIssuedSchemaId + 1
         }
     }
 
@@ -175,23 +171,22 @@ pub contract NFTContract : NonFungibleToken {
             }
             assert(isValidTemplate, message: "invalid template data. Error: ".concat(invalidKey))
 
-            let newTemplateId = NFTContract.lastIssuedTemplateId + 1
-            self.templateId = newTemplateId
+            self.templateId = NFTContract.lastIssuedTemplateId
             self.brandId = brandId
             self.schemaId = schemaId
             self.maxSupply = maxSupply
             self.immutableData = immutableData
             self.issuedSupply = 0
-            NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
         }
 
-        pub fun incrementIssuedSupply() :UInt64{
+        access(contract) fun incrementIssuedSupply() : UInt64 {
             pre {
                 self.issuedSupply  < self.maxSupply: "Template reached max supply"
             }   
             self.issuedSupply = self.issuedSupply + 1            
             return self.issuedSupply        
         }
+        
     }
 
     pub struct NFTData {
@@ -208,7 +203,7 @@ pub contract NFTContract : NonFungibleToken {
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
 
-        pub let data: NFTData
+        access(contract) let data: NFTData
 
         init(templateID:UInt64, mintNumber:UInt64){
             NFTContract.totalSupply = NFTContract.totalSupply + 1
@@ -299,8 +294,9 @@ pub contract NFTContract : NonFungibleToken {
             }
             let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
             NFTContract.allBrands[NFTContract.lastIssuedBrandId] = newBrand
-            self.ownedBrands[NFTContract.lastIssuedBrandId] = newBrand
             emit BrandCreated(brandId:NFTContract.lastIssuedBrandId ,brandName:brandName, author: self.owner?.address!, data:data)
+            self.ownedBrands[NFTContract.lastIssuedBrandId] = newBrand   
+            NFTContract.lastIssuedBrandId = NFTContract.lastIssuedBrandId + 1
         }
 
         pub fun updateBrandData(brandId:UInt64, data:{String:String}){
@@ -326,8 +322,10 @@ pub contract NFTContract : NonFungibleToken {
             }
             let newSchema = Schema(schemaName: schemaName, author: self.owner?.address!, format: format)
             NFTContract.allSchemas[NFTContract.lastIssuedSchemaId] = newSchema
-            self.ownedSchemas[NFTContract.lastIssuedSchemaId] = newSchema
             emit SchemaCreated(schemaId: NFTContract.lastIssuedSchemaId, schemaName: schemaName, author: self.owner?.address!)
+            self.ownedSchemas[NFTContract.lastIssuedSchemaId] = newSchema
+            NFTContract.lastIssuedSchemaId = NFTContract.lastIssuedSchemaId + 1
+            
         }
 
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64,maxSupply: UInt64, immutableData: {String:AnyStruct}){
@@ -340,8 +338,9 @@ pub contract NFTContract : NonFungibleToken {
             }
             let newTemplate = Template(brandId:brandId, schemaId:schemaId, maxSupply:maxSupply,  immutableData: immutableData)
             NFTContract.allTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
-            self.ownedTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
             emit TemplateCreated(templateId:NFTContract.lastIssuedTemplateId, brandId:brandId, schemaId:schemaId, maxSupply:maxSupply)
+            self.ownedTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
+            NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
         }
 
         pub fun mintNFT(templateId:UInt64, account:Address){
@@ -409,12 +408,15 @@ pub contract NFTContract : NonFungibleToken {
         return NFTContract.allTemplates[templateId]!
     } 
     pub fun getNFTDataById(nftId:UInt64):NFTData{
+        pre {
+            NFTContract.allNFTs[nftId]!=nil:"nft id does not exist"
+        }
         return NFTContract.allNFTs[nftId]!
     }
     init(){
-        self.lastIssuedBrandId = 0
-        self.lastIssuedSchemaId = 0
-        self.lastIssuedTemplateId = 0
+        self.lastIssuedBrandId = 1
+        self.lastIssuedSchemaId = 1
+        self.lastIssuedTemplateId = 1
         self.totalSupply = 0
         self.allBrands = {}
         self.allSchemas = {}
@@ -426,6 +428,7 @@ pub contract NFTContract : NonFungibleToken {
         self.CollectionPublicPath = /public/TroonCollection
 
         self.NFTMethodsCapabilityPrivatePath = /private/NFTMethodsCapability
+        
         self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
         self.account.link<&{NFTMethodsCapability}>(self.NFTMethodsCapabilityPrivatePath, target: self.AdminResourceStoragePath)
 
