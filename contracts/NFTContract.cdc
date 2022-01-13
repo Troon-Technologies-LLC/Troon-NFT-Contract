@@ -2,6 +2,7 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 
 pub contract NFTContract : NonFungibleToken {
 
+    // Events    
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
@@ -13,23 +14,37 @@ pub contract NFTContract : NonFungibleToken {
     pub event SchemaCreated(schemaId:UInt64, schemaName:String, author:Address)
     pub event TemplateCreated(templateId:UInt64, brandId:UInt64, schemaId:UInt64, maxSupply:UInt64)
 
+    // Paths
     pub let AdminResourceStoragePath: StoragePath
-    
     pub let NFTMethodsCapabilityPrivatePath: PrivatePath
-
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
 
+    // Latest brand-id
     pub var lastIssuedBrandId: UInt64
-    pub var lastIssuedSchemaId: UInt64
-    pub var lastIssuedTemplateId: UInt64
-    pub var totalSupply:UInt64
 
+    // Latest schema-id
+    pub var lastIssuedSchemaId: UInt64
+
+    // Latest brand-id
+    pub var lastIssuedTemplateId: UInt64
+
+    // Total supply of all NFTs that are minted using this contract
+    pub var totalSupply:UInt64
+    
+    // A dictionary that stores all Brands against it's brand-id.
     access(self) var allBrands: {UInt64: Brand}
+
+    // A dictionary that stores all Schema against it's schema-id.
     access(self) var allSchemas:{UInt64:Schema}
+
+    // A dictionary that stores all Templates against it's template-id.
     access(self) var allTemplates:{UInt64:Template}
+
+    // A dictionary that stores each NFT's data against it's id.
     access(self) var allNFTs : {UInt64:NFTData}
 
+    // Enum containing all vaild data-types that are supported by NFT-Contract
     pub enum SchemaType :UInt8{
         pub case String
         pub case Int
@@ -40,6 +55,7 @@ pub contract NFTContract : NonFungibleToken {
         pub case Any        
     }
 
+    // A strcuture that contain all the data related to a Brand
     pub struct Brand {
         pub let brandId : UInt64
         pub let brandName : String
@@ -62,6 +78,7 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
+    // A strcuture that contain all the data related to a Schema
     pub struct Schema {
         pub let schemaId: UInt64
         pub let schemaName: String
