@@ -1,5 +1,6 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 
 // Print the NFTs owned by accounts 0x01 and 0x02.
 pub fun main(address: Address) : Int {

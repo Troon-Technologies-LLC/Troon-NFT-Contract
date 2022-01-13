@@ -1,10 +1,11 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 
 transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
     prepare(acct: AuthAccount) {
 
-       let actorResource = acct.getCapability
+        let actorResource = acct.getCapability
             <&{NFTContract.NFTMethodsCapability}>
             (NFTContract.NFTMethodsCapabilityPrivatePath)
             .borrow() ?? 
@@ -12,13 +13,7 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
 
 
         let extra : {String: AnyStruct} = {
-                "name":"alex", // string
-                "age":21,// integer
-                "percentage":2.1 as Fix64, // address
-                "owner": 0x01 as Address, // bool
-                "burnable":false,
-                "startDate":"",
-                "endDate":""             
+                "name":"alex" // string       
         }
         
         let immutableData : {String: AnyStruct} = {

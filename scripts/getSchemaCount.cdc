@@ -1,4 +1,4 @@
-import NFTContract from "./NFTContract.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 
 pub fun main() : Int {
   return  NFTContract.getAllSchemas().length

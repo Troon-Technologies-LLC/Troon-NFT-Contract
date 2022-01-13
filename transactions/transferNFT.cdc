@@ -1,5 +1,5 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 // This transaction transfers a template to a recipient
 // This transaction is how a  user would transfer an NFT
@@ -25,7 +25,7 @@ transaction(recipient:Address, withdrawID:UInt64) {
     execute {
         // get the recipient's public account object
         let recipient = getAccount(recipient)
-         let receiverRef = recipient.getCapability<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath)
+        let receiverRef = recipient.getCapability<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath)
             .borrow()
             ?? panic("Could not borrow receiver reference")
         // deposit the NFT in the receivers collection
