@@ -98,6 +98,7 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
+    // A strcuture that contain all the data and methods related to Template
     pub struct Template {
         pub let templateId: UInt64
         pub let brandId: UInt64
@@ -113,6 +114,8 @@ pub contract NFTContract : NonFungibleToken {
                 maxSupply > 0 : "MaxSupply must be greater than zero"
                 immutableData != nil: "ImmutableData must not be nil"   
             }
+
+            // Before creating template, we need to check template data, if it is valid against given schema or not
             let schema = NFTContract.allSchemas[schemaId]!
             var invalidKey : String = ""
             var isValidTemplate = true
@@ -185,6 +188,7 @@ pub contract NFTContract : NonFungibleToken {
             NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
         }
 
+        // a method to increment issued supply for template
         pub fun incrementIssuedSupply() :UInt64{
             pre {
                 self.issuedSupply  < self.maxSupply: "Template reached max supply"
@@ -194,6 +198,7 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
+    // A structure that link template and mint-no of NFT
     pub struct NFTData {
         pub let templateID:UInt64
         pub let mintNumber:UInt64
@@ -205,9 +210,9 @@ pub contract NFTContract : NonFungibleToken {
 
     }
 
+    // A resource NFT, 
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
-
         pub let data: NFTData
 
         init(templateID:UInt64, mintNumber:UInt64){
@@ -222,6 +227,7 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
+    // A resouce Collection,  
     pub resource Collection : NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic{    
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
