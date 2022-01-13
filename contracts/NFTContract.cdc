@@ -261,10 +261,12 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
 
+    // Special Capability, that is needed by user to utilize our contract. Only verified user can get this capability so it will add a KYC layer in our white-lable-solution
     pub resource interface UserSpecialCapability {
         pub fun addCapability(cap: Capability<&{NFTMethodsCapability}>)
     }
 
+    // Interface, which contains all the methods that are called by any user to mint NFT and manage brand, schema and template funtionality
     pub resource interface NFTMethodsCapability {
         pub fun createNewBrand(brandName:String, data:{String:String})
         pub fun updateBrandData(brandId:UInt64, data:{String:String})
@@ -273,14 +275,22 @@ pub contract NFTContract : NonFungibleToken {
         pub fun mintNFT(templateId:UInt64, account:Address)
     }
     
+    //AdminResource, where are defining all the methods related to Brands, Schema, Template and NFTs
     pub resource AdminResource : UserSpecialCapability, NFTMethodsCapability {
 
+        // A variable which stores all Brands owned by a user
         priv var ownedBrands : {UInt64:Brand}
+
+        // A variable which stores all Schema owned by a user
         priv var ownedSchemas : {UInt64:Schema}
+
+        // A variable which stores all Templates owned by a user
         priv var ownedTemplates : {UInt64:Template}
+
+        //a variable that store user capability to utilize methods 
         access(contract) var capability: Capability<&{NFTMethodsCapability}>?
-        // this is the addCapability method that the Admin owner calls
-        // to add the SpecialCapability to the AdminResource
+
+        //method which provide capability to user to utilize methods
         pub fun addCapability(cap: Capability<&{NFTMethodsCapability}>) {
             pre {
                 // we make sure the SpecialCapability is 
@@ -292,6 +302,7 @@ pub contract NFTContract : NonFungibleToken {
             self.capability = cap
         }
 
+        //method to create new Brand, only access by the verified user
         pub fun createNewBrand(brandName:String, data:{String:String}){
             pre {
                 // the transaction will instantly revert if 
@@ -305,6 +316,7 @@ pub contract NFTContract : NonFungibleToken {
             NFTContract.lastIssuedBrandId = NFTContract.lastIssuedBrandId + 1
         }
 
+        //method to update the existing Brand, only author of brand can update this brand
         pub fun updateBrandData(brandId:UInt64, data:{String:String}){
             pre{
                 // the transaction will instantly revert if 
@@ -320,6 +332,7 @@ pub contract NFTContract : NonFungibleToken {
             emit BrandUpdated(brandId:brandId, brandName:oldBrand!.brandName, author:oldBrand!.author, data:data)
         }
 
+        //method to create new Schema, only access by the verified user
         pub fun createSchema(schemaName: String, format: {String: SchemaType}){
             pre {
                 // the transaction will instantly revert if 
@@ -334,6 +347,7 @@ pub contract NFTContract : NonFungibleToken {
             
         }
 
+        //method to create new Template, only access by the verified user
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64,maxSupply: UInt64, immutableData: {String:AnyStruct}){
             pre {   
                 // the transaction will instantly revert if 
@@ -349,6 +363,7 @@ pub contract NFTContract : NonFungibleToken {
             NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
         }
 
+        //method to mint NFT, only access by the verified user
         pub fun mintNFT(templateId:UInt64, account:Address){
             pre{
                 // the transaction will instantly revert if 
@@ -365,6 +380,8 @@ pub contract NFTContract : NonFungibleToken {
             var newNFT: @NFT <- create NFT(templateID:templateId,mintNumber:NFTContract.allTemplates[templateId]!.incrementIssuedSupply())  
             recipientCollection.deposit(token: <-newNFT)
         }
+
+        //Initialize all variables with empty data
         init(){
             self.ownedBrands = {}
             self.ownedSchemas = {}
@@ -373,18 +390,22 @@ pub contract NFTContract : NonFungibleToken {
         }
     }
     
+    //method to create empty Collection
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
         return <- create NFTContract.Collection()
     }
 
+    //method to create Admin Resources
     pub fun createAdminResource(): @AdminResource{
         return <- create AdminResource()    
     }
 
+    //method to get all brands
     pub fun getAllBrands():{UInt64:Brand}{
         return NFTContract.allBrands
     }
 
+    //method to get brand by id
     pub fun getBrandById(brandId:UInt64):Brand{
         pre {
             NFTContract.allBrands[brandId] != nil:"brand Id does not exists"  
@@ -392,33 +413,41 @@ pub contract NFTContract : NonFungibleToken {
         return NFTContract.allBrands[brandId]!
     }
 
+    //method to get all schema
     pub fun getAllSchemas():{UInt64:Schema}{
         return NFTContract.allSchemas
     }
 
+    //method to get schema by id
     pub fun getSchemaById(schemaId:UInt64): Schema{
         pre {
             NFTContract.allSchemas[schemaId]!=nil:"schema id does not exist"
         }
         return NFTContract.allSchemas[schemaId]!
     }
-    
+
+    //method to get all templates
     pub fun getAllTemplates():{UInt64:Template}{
         return NFTContract.allTemplates
     }
 
+    //method to get template by id
     pub fun getTemplateById(templateId:UInt64): Template{
         pre {
             NFTContract.allTemplates[templateId]!=nil:"Template id does not exist"
         }
         return NFTContract.allTemplates[templateId]!
     } 
+
+    //method to get nft-data by id
     pub fun getNFTDataById(nftId:UInt64):NFTData{
         pre {
             NFTContract.allNFTs[nftId]!=nil:"nft id does not exist"
         }
         return NFTContract.allNFTs[nftId]!
     }
+
+    //Initialize all variables with default values
     init(){
         self.lastIssuedBrandId = 1
         self.lastIssuedSchemaId = 1
