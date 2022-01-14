@@ -6,13 +6,13 @@ pub contract NFTContract : NonFungibleToken {
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
-    pub event NFTBorrowed(id:UInt64)
-    pub event NFTDestroyed(id:UInt64)
-    pub event NFTMinted(nftId:UInt64, templateId:UInt64, mintNumber: UInt64)
-    pub event BrandCreated(brandId:UInt64, brandName:String, author:Address, data:{String:String})
-    pub event BrandUpdated(brandId:UInt64, brandName:String, author:Address, data:{String:String})
-    pub event SchemaCreated(schemaId:UInt64, schemaName:String, author:Address)
-    pub event TemplateCreated(templateId:UInt64, brandId:UInt64, schemaId:UInt64, maxSupply:UInt64)
+    pub event NFTBorrowed(id: UInt64)
+    pub event NFTDestroyed(id: UInt64)
+    pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64)
+    pub event BrandCreated(brandId: UInt64, brandName: String, author: Address, data:{String: String})
+    pub event BrandUpdated(brandId: UInt64, brandName: String, author: Address, data:{String: String})
+    pub event SchemaCreated(schemaId: UInt64, schemaName: String, author: Address)
+    pub event TemplateCreated(templateId: UInt64, brandId: UInt64, schemaId: UInt64, maxSupply: UInt64)
 
     // Paths
     pub let AdminResourceStoragePath: StoragePath
@@ -57,13 +57,13 @@ pub contract NFTContract : NonFungibleToken {
 
     // A strcuture that contain all the data related to a Brand
     pub struct Brand {
-        pub let brandId : UInt64
-        pub let brandName : String
-        pub let author : Address
-        access(contract) var data : {String: String}
+        pub let brandId: UInt64
+        pub let brandName: String
+        pub let author: Address
+        access(contract) var data: {String: String}
         
-        init(brandName:String, author: Address, data:{String:String}){
-            pre{
+        init(brandName: String, author: Address, data: {String:String}){
+            pre {
                 brandName.length > 0: "Brand name is required";
             }
             self.brandId = NFTContract.lastIssuedBrandId
@@ -71,7 +71,7 @@ pub contract NFTContract : NonFungibleToken {
             self.author = author
             self.data = data
         }
-        pub fun update(data:{String:String}){
+        pub fun update(data: {String:String}){
             self.data = data
         }
     }

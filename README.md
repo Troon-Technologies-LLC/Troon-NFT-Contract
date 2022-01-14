@@ -25,3 +25,30 @@ Schemas are used to define a data structure of NFT. Schema is like an interface 
 ## Template
 
 Templates are blueprints of NFTs. For creating NFTs, we use Templates as defined schemas. Flow Blockchains are storing metadata offchain but only we are creating a structure where we can store metadata onchain.
+
+
+## ✨ Getting Started
+
+### Clone Project and Install Dependencies
+
+[see Documentation](docs/Dependencies.md)
+
+## Directory Structure of Project
+
+[see Documentation](docs/Directory_Structure.md)
+
+## Technical Documentation of NFTContract(For more technical details please use this link)
+
+[see Documentation](docs/Technical_Document.md)
+
+## Test Cases (using Golang)
+
+[see Documentation](test/go/README.md)
+
+## Test Cases (using Javascript)
+
+[see Documentation](test/js/README.md)
+
+## Technical Documentation of NFTContract(For more technical details please use this link)
+
+[see Documentation](docs/Technical_Document.md)
