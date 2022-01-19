@@ -12,13 +12,13 @@ A common order of creating NFT would be
  - Create NFT Receiver with `transaction/setupAccount` .
  - Create Mint of Templates and transfer to Address(having Setup Account enabled) with `transaction/mintNFT`
 You can also see the scripts in `transactions/scripts` to see how information
-can be read from the NFTContract. 
+can be read from the NFTContractV01. 
 
-### NFTContract Events
+### NFTContractV01 Events
 
  - Contract Initialized ->
 `pub event ContractInitialized()` 
-This event is emitted when the `NFTContract` will be initialized.
+This event is emitted when the `NFTContractV01` will be initialized.
 
 - Event for Withdraw NFT ->
 `pub event Withdraw(id: UInt64, from: Address?)`
@@ -53,9 +53,9 @@ Emitted when a new Template will be created
 Emitted when a Template will be Minted and save as NFT
 
 
-## NFTContract Addresses
+## NFTContractV01 Addresses
 
-`NFTContract.cdc`: This is the main NFTContract smart contract that defines
+`NFTContractV01.cdc`: This is the main NFTContractV01 smart contract that defines
 the core functionality of the NFT.
 
 | Network | Contract Address     |
@@ -63,9 +63,9 @@ the core functionality of the NFT.
 | Testnet | `0x8f5c3c561b83eae3` |
 
 
-## NFTContract Overview Technical
+## NFTContractV01 Overview Technical
 
-Each NFTContract represent a standard to create an NFT. We inherited NonFungibleToken to conform our standard with the existent NFT standard.
+Each NFTContractV01 represent a standard to create an NFT. We inherited NonFungibleToken to conform our standard with the existent NFT standard.
 To Create an NFT, you first have to create a Brand structure which contains following fields:
 - brandId: UInt64 (Id of Brand)
 - brandName: String (Name of Brand)

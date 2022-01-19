@@ -1,4 +1,4 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import NFTContractV01 from "../contracts/NFTContractV01.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
@@ -10,7 +10,7 @@ transaction(admin:Address) {
 
         // get the public capability from the Admin's public storage
         let TemplateAdminResource = TemplateAdminAccount.getCapability
-            <&{NFTContract.UserSpecialCapability}>
+            <&{NFTContractV01.UserSpecialCapability}>
             (/public/UserSpecialCapability)
             .borrow()
             ?? panic("could not borrow reference to UserSpecialCapability")
@@ -19,8 +19,8 @@ transaction(admin:Address) {
         // this will be the signer of this transaction
         //
         let specialCapability = signer.getCapability
-            <&{NFTContract.NFTMethodsCapability}>
-            (NFTContract.NFTMethodsCapabilityPrivatePath) 
+            <&{NFTContractV01.NFTMethodsCapability}>
+            (NFTContractV01.NFTMethodsCapabilityPrivatePath) 
 
         // if the special capability is valid...
         if specialCapability.check() {

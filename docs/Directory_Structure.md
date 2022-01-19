@@ -2,16 +2,16 @@
 
 The directories here are organized into contracts, scripts, and transactions.
 
-Contracts directory contain the source code for the NFTContract and NonFungibleContract 
+Contracts directory contain the source code for the NFTContractV01 and NonFungibleContract 
 interface that are deployed to Flow Blockchain.
 
 Scripts directory contain read-only transactions to get information about
-the state of users Collection or about the state of the NFTContract.
+the state of users Collection or about the state of the NFTContractV01.
 
 Transactions directory contain the transactions that various users can use to
 perform actions in the smart contract like Create Brand, Schema, Templates and Mint NFTs.
 
- - `contracts/` : Where the NFTContract smart contract live.
+ - `contracts/` : Where the NFTContractV01 smart contract live.
  - `transactions/` : This directory contains all the transactions that are associated 
  with these smart contracts.
  - `scripts/`  : This contains all the read-only Cadence scripts 
