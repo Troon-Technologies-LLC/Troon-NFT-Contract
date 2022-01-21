@@ -28,7 +28,7 @@ pub contract NFTContractV01 : NonFungibleToken {
 
     // Latest brand-id
     pub var lastIssuedTemplateId: UInt64
-    
+
     // Total supply of all NFTs that are minted using this contract
     pub var totalSupply:UInt64
     
@@ -61,7 +61,7 @@ pub contract NFTContractV01 : NonFungibleToken {
                 brandName.length > 0: "Brand name is required";
             }
 
-            let newBrandId = NFTContractV01.lastIssuedBrandId + 1
+            let newBrandId = NFTContractV01.lastIssuedBrandId
             self.brandId = newBrandId
             self.brandName = brandName
             self.author = author
@@ -84,7 +84,7 @@ pub contract NFTContractV01 : NonFungibleToken {
                 schemaName.length>0: "Could not create schema: name is required"
             }
 
-            let newSchemaId = NFTContractV01.lastIssuedSchemaId + 1
+            let newSchemaId = NFTContractV01.lastIssuedSchemaId
             self.schemaId = newSchemaId
             self.schemaName = schemaName
             self.author = author      
