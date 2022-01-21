@@ -1,31 +1,29 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContractV01 from "../contracts/NFTContractV01.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 
 transaction() {
     prepare(signer: AuthAccount) {
         // save the resource to the signer's account storage
-        log(signer.getLinkTarget(NFTContract.NFTMethodsCapabilityPrivatePath))
-        if signer.getLinkTarget(NFTContract.NFTMethodsCapabilityPrivatePath) == nil {
-            let adminResouce <- NFTContract.createAdminResource()
-            signer.save(<- adminResouce, to: NFTContract.AdminResourceStoragePath)
+        if signer.getLinkTarget(NFTContractV01.NFTMethodsCapabilityPrivatePath) == nil {
+            let adminResouce <- NFTContractV01.createAdminResource()
+            signer.save(<- adminResouce, to: NFTContractV01.AdminResourceStoragePath)
             // link the UnlockedCapability in private storage
-            signer.link<&{NFTContract.NFTMethodsCapability}>(
-                NFTContract.NFTMethodsCapabilityPrivatePath,
-                target: NFTContract.AdminResourceStoragePath
+            signer.link<&{NFTContractV01.NFTMethodsCapability}>(
+                NFTContractV01.NFTMethodsCapabilityPrivatePath,
+                target: NFTContractV01.AdminResourceStoragePath
             )
         }
 
-        signer.link<&{NFTContract.UserSpecialCapability}>(
+        signer.link<&{NFTContractV01.UserSpecialCapability}>(
             /public/UserSpecialCapability,
-            target: NFTContract.AdminResourceStoragePath
+            target: NFTContractV01.AdminResourceStoragePath
         )
 
-        let collection  <- NFTContract.createEmptyCollection()
+        let collection  <- NFTContractV01.createEmptyCollection()
         // store the empty NFT Collection in account storage
-        signer.save( <- collection, to:NFTContract.CollectionStoragePath)
-        log("Collection created for account".concat(signer.address.toString()))
+        signer.save( <- collection, to:NFTContractV01.CollectionStoragePath)
         // create a public capability for the Collection
-        signer.link<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath, target:NFTContract.CollectionStoragePath)
-        log("Capability created")
-      }
+        signer.link<&{NonFungibleToken.CollectionPublic}>(NFTContractV01.CollectionPublicPath, target:NFTContractV01.CollectionStoragePath)
+    }
 }

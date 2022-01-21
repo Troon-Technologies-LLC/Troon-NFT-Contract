@@ -1,24 +1,25 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContractV01 from "../contracts/NFTContractV01.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+
 transaction (schemaName:String){
 
    prepare(acct: AuthAccount) {
       let actorResource = acct.getCapability
-            <&{NFTContract.NFTMethodsCapability}>
-            (NFTContract.NFTMethodsCapabilityPrivatePath)
+            <&{NFTContractV01.NFTMethodsCapability}>
+            (NFTContractV01.NFTMethodsCapabilityPrivatePath)
             .borrow() ?? 
             panic("could not borrow a reference to the NFTMethodsCapability interface")
 
-         let format : {String: NFTContract.SchemaType} = {
-            "artist" : NFTContract.SchemaType.String,
-            "artistEmail"  :  NFTContract.SchemaType.String,
-            "title":NFTContract.SchemaType.String,
-            "mintType":  NFTContract.SchemaType.String,
-            "nftType":  NFTContract.SchemaType.String,
-            "rarity":  NFTContract.SchemaType.String,
-            "contectType":  NFTContract.SchemaType.String,
-            "contectValue":  NFTContract.SchemaType.String,
-            "extras": NFTContract.SchemaType.Any
+         let format : {String: NFTContractV01.SchemaType} = {
+            "artist" : NFTContractV01.SchemaType.String,
+            "artistEmail"  :  NFTContractV01.SchemaType.String,
+            "title":NFTContractV01.SchemaType.String,
+            "mintType":  NFTContractV01.SchemaType.String,
+            "nftType":  NFTContractV01.SchemaType.String,
+            "rarity":  NFTContractV01.SchemaType.String,
+            "contectType":  NFTContractV01.SchemaType.String,
+            "contectValue":  NFTContractV01.SchemaType.String,
+            "extras": NFTContractV01.SchemaType.Any
             }
 
          actorResource.createSchema(schemaName: schemaName, format: format)

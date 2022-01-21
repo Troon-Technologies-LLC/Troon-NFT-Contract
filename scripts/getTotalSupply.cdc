@@ -1,7 +1,7 @@
-import NFTContract from "./NFTContract.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NFTContractV01 from "../contracts/NFTContractV01.cdc"
+
 
 pub fun main(): UInt64 {
-    return NFTContract.totalSupply
+    return NFTContractV01.totalSupply
 
 }
