@@ -55,7 +55,7 @@ pub contract NFTContractV01 : NonFungibleToken {
         pub case Any        
     }
 
-    // A strcuture that contain all the data related to a Brand
+    // A structure that contain all the data related to a Brand
     pub struct Brand {
         pub let brandId: UInt64
         pub let brandName: String
@@ -76,7 +76,7 @@ pub contract NFTContractV01 : NonFungibleToken {
         }
     }
 
-    // A strcuture that contain all the data related to a Schema
+    // A structure that contain all the data related to a Schema
     pub struct Schema {
         pub let schemaId: UInt64
         pub let schemaName: String
@@ -94,7 +94,7 @@ pub contract NFTContractV01 : NonFungibleToken {
         }
     }
 
-    // A strcuture that contain all the data and methods related to Template
+    // A structure that contain all the data and methods related to Template
     pub struct Template {
         pub let templateId: UInt64
         pub let brandId: UInt64
