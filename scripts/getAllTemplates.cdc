@@ -1,5 +1,5 @@
-import NFTContractV01 from "../contracts/NFTContractV01.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 
-pub fun main():{UInt64:NFTContractV01.Template}  {
-    return NFTContractV01.getAllTemplates()
+pub fun main():{UInt64:NFTContract.Template}  {
+    return NFTContract.getAllTemplates()
 }

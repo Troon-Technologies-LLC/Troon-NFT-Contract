@@ -1,5 +1,5 @@
-import NFTContractV01 from "./NFTContractV01.cdc"
+import NFTContract from "./NFTContract.cdc"
 
-pub fun main(brandId:UInt64): NFTContractV01.Brand {
-    return NFTContractV01.getBrandById(brandId: brandId)
+pub fun main(brandId:UInt64): NFTContract.Brand {
+    return NFTContract.getBrandById(brandId: brandId)
 }

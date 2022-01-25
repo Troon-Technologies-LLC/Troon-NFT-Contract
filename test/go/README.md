@@ -1,6 +1,6 @@
-# NFTContractV01 Go Packages
+# NFTContract Go Packages
 
-This directory conains packages for interacting with the NFTContractV01
+This directory conains packages for interacting with the NFTContract
 smart contracts from a Go programming environment.
 
 # GOlang Version

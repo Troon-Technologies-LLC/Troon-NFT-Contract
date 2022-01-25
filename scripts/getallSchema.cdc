@@ -1,6 +1,6 @@
-import NFTContractV01 from "../contracts/NFTContractV01.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 
 
-pub fun main(): {UInt64:NFTContractV01.Schema} {
-    return NFTContractV01.getAllSchemas()
+pub fun main(): {UInt64:NFTContract.Schema} {
+    return NFTContract.getAllSchemas()
 }
