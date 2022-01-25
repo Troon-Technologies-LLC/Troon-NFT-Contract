@@ -1,6 +1,6 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
 
-pub contract NFTContractV01 : NonFungibleToken {
+pub contract NFTContractV01: NonFungibleToken {
 
     // Events
     pub event ContractInitialized()
