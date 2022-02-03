@@ -1,8 +1,7 @@
 import NFTContract from "../contracts/NFTContract.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
-
-transaction(admin:Address) {
+transaction(admin: Address) {
     prepare(signer: AuthAccount) {
 
         // get the public account object for the Admin
@@ -15,9 +14,16 @@ transaction(admin:Address) {
             .borrow()
             ?? panic("could not borrow reference to UserSpecialCapability")
 
+        //get admin refrence for adding AdminCapability
+         let adminRef = signer.getCapability<&NFTContract.AdminCapability>(NFTContract.AdminCapabilityPrivate).borrow() 
+                        ?? panic("could not get borrow the refrence")
+        let userResponse = adminRef.isWhiteListedAccount(_user: admin) 
+        if(userResponse == false) {
+            adminRef.addwhiteListedAccount(_user: admin)
+        }
+
         // get the private capability from the Authorized owner of the AdminResource
         // this will be the signer of this transaction
-        //
         let specialCapability = signer.getCapability
             <&{NFTContract.NFTMethodsCapability}>
             (NFTContract.NFTMethodsCapabilityPrivatePath) 
