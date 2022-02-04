@@ -32,7 +32,7 @@ pub contract NFTContract: NonFungibleToken {
     pub var lastIssuedTemplateId: UInt64
 
     // Total supply of all NFTs that are minted using this contract
-    pub var totalSupply:UInt64
+    pub var totalSupply: UInt64
     
     // A dictionary that stores all Brands against it's brand-id.
     access(self) var allBrands: {UInt64: Brand}
