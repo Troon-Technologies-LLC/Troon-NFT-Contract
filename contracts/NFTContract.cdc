@@ -313,7 +313,7 @@ pub contract NFTContract: NonFungibleToken {
                 // valid before executing the method
                 cap.borrow() != nil: "could not borrow a reference to the SpecialCapability"
                 self.capability == nil: "resource already has the SpecialCapability"
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
             // add the SpecialCapability
             self.capability = cap
@@ -325,7 +325,7 @@ pub contract NFTContract: NonFungibleToken {
                 // the transaction will instantly revert if
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
             let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
@@ -341,7 +341,7 @@ pub contract NFTContract: NonFungibleToken {
                 // the transaction will instantly revert if
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 NFTContract.allBrands[brandId] != nil: "brand Id does not exists"
             }
 
@@ -360,7 +360,7 @@ pub contract NFTContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
             let newSchema = Schema(schemaName: schemaName, author: self.owner?.address!, format: format)
@@ -377,7 +377,7 @@ pub contract NFTContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
                 self.ownedSchemas[schemaId] != nil: "Schema Id Must be valid"
             }
@@ -395,7 +395,7 @@ pub contract NFTContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorize for this action"
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedTemplates[templateId]!= nil: "Minter does not have specific template Id"
                 NFTContract.allTemplates[templateId] != nil: "Template Id must be valid"
                 }
