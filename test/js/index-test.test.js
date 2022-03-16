@@ -4,6 +4,7 @@ import {
   emulator,
   getAccountAddress,
   deployContractByName,
+  getContractCode,
   getContractAddress,
   getTransactionCode,
   getScriptCode,
