@@ -1,6 +1,6 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 
 
-pub fun main(brandId:UInt64): TroonAtomicStandardContract.Brand {
-    return TroonAtomicStandardContract.getBrandById(brandId: brandId)
+pub fun main(brandId:UInt64): TroonAtomicStandard.Brand {
+    return TroonAtomicStandard.getBrandById(brandId: brandId)
 }

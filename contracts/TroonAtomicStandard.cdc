@@ -1,6 +1,6 @@
 import NonFungibleToken from 0xf8d6e0586b0a20c7
 
-pub contract TroonAtomicStandardContract: NonFungibleToken {
+pub contract TroonAtomicStandard: NonFungibleToken {
 
     // Events
     pub event ContractInitialized()
@@ -66,7 +66,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 brandName.length > 0: "Brand name is required";
             }
 
-            let newBrandId = TroonAtomicStandardContract.lastIssuedBrandId
+            let newBrandId = TroonAtomicStandard.lastIssuedBrandId
             self.brandId = newBrandId
             self.brandName = brandName
             self.author = author
@@ -89,7 +89,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 schemaName.length > 0: "Could not create schema: name is required"
             }
 
-            let newSchemaId = TroonAtomicStandardContract.lastIssuedSchemaId
+            let newSchemaId = TroonAtomicStandard.lastIssuedSchemaId
             self.schemaId = newSchemaId
             self.schemaName = schemaName
             self.author = author
@@ -108,14 +108,14 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
 
         init(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}) {
             pre {
-                TroonAtomicStandardContract.allBrands[brandId] != nil:"Brand Id must be valid"
-                TroonAtomicStandardContract.allSchemas[schemaId] != nil:"Schema Id must be valid"
+                TroonAtomicStandard.allBrands[brandId] != nil:"Brand Id must be valid"
+                TroonAtomicStandard.allSchemas[schemaId] != nil:"Schema Id must be valid"
                 maxSupply > 0 : "MaxSupply must be greater than zero"
                 immutableData != nil: "ImmutableData must not be nil"
             }
 
             // Before creating template, we need to check template data, if it is valid against given schema or not
-            let schema = TroonAtomicStandardContract.allSchemas[schemaId]!
+            let schema = TroonAtomicStandard.allSchemas[schemaId]!
             var invalidKey: String = ""
             var isValidTemplate = true
 
@@ -126,47 +126,47 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                     invalidKey = "key $".concat(key.concat(" not found"))
                     break
                 }
-                if schema.format[key] == TroonAtomicStandardContract.SchemaType.String {
+                if schema.format[key] == TroonAtomicStandard.SchemaType.String {
                     if(value as? String == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
                 }
-                else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Int {
+                else if schema.format[key] == TroonAtomicStandard.SchemaType.Int {
                     if(value as? Int == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
                 } 
-                else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Fix64 {
+                else if schema.format[key] == TroonAtomicStandard.SchemaType.Fix64 {
                     if(value as? Fix64 == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
-                }else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Bool {
+                }else if schema.format[key] == TroonAtomicStandard.SchemaType.Bool {
                     if(value as? Bool == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
-                }else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Address {
+                }else if schema.format[key] == TroonAtomicStandard.SchemaType.Address {
                     if(value as? Address == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
                 }
-                else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Array {
+                else if schema.format[key] == TroonAtomicStandard.SchemaType.Array {
                     if(value as? [AnyStruct] == nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
                         break
                     }
                 }
-                else if schema.format[key] == TroonAtomicStandardContract.SchemaType.Any {
+                else if schema.format[key] == TroonAtomicStandard.SchemaType.Any {
                     if(value as? {String:AnyStruct} ==nil) {
                         isValidTemplate = false
                         invalidKey = "key $".concat(key.concat(" has type mismatch"))
@@ -176,7 +176,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
             }
             assert(isValidTemplate, message: "invalid template data. Error: ".concat(invalidKey))
 
-            self.templateId = TroonAtomicStandardContract.lastIssuedTemplateId
+            self.templateId = TroonAtomicStandard.lastIssuedTemplateId
             self.brandId = brandId
             self.schemaId = schemaId
             self.maxSupply = maxSupply
@@ -213,10 +213,10 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
         access(contract) let data: TroonAtomicNFTData
 
         init(templateID: UInt64, mintNumber: UInt64) {
-            TroonAtomicStandardContract.totalSupply = TroonAtomicStandardContract.totalSupply + 1
-            self.id = TroonAtomicStandardContract.totalSupply
-            TroonAtomicStandardContract.allNFTs[self.id] = TroonAtomicNFTData(templateID: templateID, mintNumber: mintNumber)
-            self.data = TroonAtomicStandardContract.allNFTs[self.id]!
+            TroonAtomicStandard.totalSupply = TroonAtomicStandard.totalSupply + 1
+            self.id = TroonAtomicStandard.totalSupply
+            TroonAtomicStandard.allNFTs[self.id] = TroonAtomicNFTData(templateID: templateID, mintNumber: mintNumber)
+            self.data = TroonAtomicStandard.allNFTs[self.id]!
             emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
         }
         destroy(){
@@ -228,7 +228,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowNFTTroonAtomicStandard(id: UInt64): &TroonAtomicStandardContract.NFT? {
+        pub fun borrowNFTTroonAtomicStandard(id: UInt64): &TroonAtomicStandard.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
@@ -257,7 +257,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
         }
 
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @TroonAtomicStandardContract.NFT
+            let token <- token as! @TroonAtomicStandard.NFT
             let id = token.id
             let oldToken <- self.ownedNFTs[id] <- token
             if self.owner?.address != nil {
@@ -277,10 +277,10 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
         // Parameters: id: The ID of the NFT to get the reference for
         //
         // Returns: A reference to the NFT
-        pub fun borrowNFTTroonAtomicStandard(id: UInt64): &TroonAtomicStandardContract.NFT? {
+        pub fun borrowNFTTroonAtomicStandard(id: UInt64): &TroonAtomicStandard.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
-                return ref as! &TroonAtomicStandardContract.NFT
+                return ref as! &TroonAtomicStandard.NFT
             } else {
                 return nil
             }
@@ -314,13 +314,13 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
         
         pub fun addwhiteListedAccount(_user: Address) {
             pre{
-                TroonAtomicStandardContract.whiteListedAccounts.contains(_user) == false: "user already exist"
+                TroonAtomicStandard.whiteListedAccounts.contains(_user) == false: "user already exist"
             }
-            TroonAtomicStandardContract.whiteListedAccounts.append(_user)
+            TroonAtomicStandard.whiteListedAccounts.append(_user)
         }
 
         pub fun isWhiteListedAccount(_user: Address): Bool {
-            return TroonAtomicStandardContract.whiteListedAccounts.contains(_user)
+            return TroonAtomicStandard.whiteListedAccounts.contains(_user)
         }
 
         init(){}
@@ -343,7 +343,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // valid before executing the method
                 cap.borrow() != nil: "could not borrow a reference to the SpecialCapability"
                 self.capability == nil: "resource already has the SpecialCapability"
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
             // add the SpecialCapability
             self.capability = cap
@@ -355,14 +355,14 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // the transaction will instantly revert if
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
             let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
-            TroonAtomicStandardContract.allBrands[TroonAtomicStandardContract.lastIssuedBrandId] = newBrand
-            emit BrandCreated(brandId: TroonAtomicStandardContract.lastIssuedBrandId ,brandName: brandName, author: self.owner?.address!, data: data)
-            self.ownedBrands[TroonAtomicStandardContract.lastIssuedBrandId] = newBrand 
-            TroonAtomicStandardContract.lastIssuedBrandId = TroonAtomicStandardContract.lastIssuedBrandId + 1
+            TroonAtomicStandard.allBrands[TroonAtomicStandard.lastIssuedBrandId] = newBrand
+            emit BrandCreated(brandId: TroonAtomicStandard.lastIssuedBrandId ,brandName: brandName, author: self.owner?.address!, data: data)
+            self.ownedBrands[TroonAtomicStandard.lastIssuedBrandId] = newBrand 
+            TroonAtomicStandard.lastIssuedBrandId = TroonAtomicStandard.lastIssuedBrandId + 1
         }
 
         //method to update the existing Brand, only author of brand can update this brand
@@ -371,16 +371,16 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // the transaction will instantly revert if
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
-                TroonAtomicStandardContract.allBrands[brandId] != nil: "brand Id does not exists"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.allBrands[brandId] != nil: "brand Id does not exists"
             }
 
-            let oldBrand = TroonAtomicStandardContract.allBrands[brandId]
+            let oldBrand = TroonAtomicStandard.allBrands[brandId]
             if self.owner?.address! != oldBrand!.author {
                 panic("No permission to update others brand")
             }
 
-            TroonAtomicStandardContract.allBrands[brandId]!.update(data: data)
+            TroonAtomicStandard.allBrands[brandId]!.update(data: data)
             emit BrandUpdated(brandId: brandId, brandName: oldBrand!.brandName, author: oldBrand!.author, data: data)
         }
 
@@ -390,14 +390,14 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
             let newSchema = Schema(schemaName: schemaName, author: self.owner?.address!, format: format)
-            TroonAtomicStandardContract.allSchemas[TroonAtomicStandardContract.lastIssuedSchemaId] = newSchema
-            emit SchemaCreated(schemaId: TroonAtomicStandardContract.lastIssuedSchemaId, schemaName: schemaName, author: self.owner?.address!)
-            self.ownedSchemas[TroonAtomicStandardContract.lastIssuedSchemaId] = newSchema
-            TroonAtomicStandardContract.lastIssuedSchemaId = TroonAtomicStandardContract.lastIssuedSchemaId + 1
+            TroonAtomicStandard.allSchemas[TroonAtomicStandard.lastIssuedSchemaId] = newSchema
+            emit SchemaCreated(schemaId: TroonAtomicStandard.lastIssuedSchemaId, schemaName: schemaName, author: self.owner?.address!)
+            self.ownedSchemas[TroonAtomicStandard.lastIssuedSchemaId] = newSchema
+            TroonAtomicStandard.lastIssuedSchemaId = TroonAtomicStandard.lastIssuedSchemaId + 1
             
         }
 
@@ -407,16 +407,16 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
                 self.ownedSchemas[schemaId] != nil: "Schema Id Must be valid"
             }
 
             let newTemplate = Template(brandId: brandId, schemaId: schemaId, maxSupply: maxSupply, immutableData: immutableData)
-            TroonAtomicStandardContract.allTemplates[TroonAtomicStandardContract.lastIssuedTemplateId] = newTemplate
-            emit TemplateCreated(templateId: TroonAtomicStandardContract.lastIssuedTemplateId, brandId: brandId, schemaId: schemaId, maxSupply: maxSupply)
-            self.ownedTemplates[TroonAtomicStandardContract.lastIssuedTemplateId] = newTemplate
-            TroonAtomicStandardContract.lastIssuedTemplateId = TroonAtomicStandardContract.lastIssuedTemplateId + 1
+            TroonAtomicStandard.allTemplates[TroonAtomicStandard.lastIssuedTemplateId] = newTemplate
+            emit TemplateCreated(templateId: TroonAtomicStandard.lastIssuedTemplateId, brandId: brandId, schemaId: schemaId, maxSupply: maxSupply)
+            self.ownedTemplates[TroonAtomicStandard.lastIssuedTemplateId] = newTemplate
+            TroonAtomicStandard.lastIssuedTemplateId = TroonAtomicStandard.lastIssuedTemplateId + 1
         }
 
         //method to mint NFT, only access by the verified user
@@ -425,16 +425,16 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
                 // the transaction will instantly revert if 
                 // the capability has not been added
                 self.capability != nil: "I don't have the special capability :("
-                TroonAtomicStandardContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                TroonAtomicStandard.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedTemplates[templateId]!= nil: "Minter does not have specific template Id"
-                TroonAtomicStandardContract.allTemplates[templateId] != nil: "Template Id must be valid"
+                TroonAtomicStandard.allTemplates[templateId] != nil: "Template Id must be valid"
                 }
             let receiptAccount = getAccount(account)
             let recipientCollection = receiptAccount
-                .getCapability(TroonAtomicStandardContract.CollectionPublicPath)
+                .getCapability(TroonAtomicStandard.CollectionPublicPath)
                 .borrow<&{NonFungibleToken.CollectionPublic}>()
                 ?? panic("Could not get receiver reference to the NFT Collection")
-            var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: TroonAtomicStandardContract.allTemplates[templateId]!.incrementIssuedSupply())
+            var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: TroonAtomicStandard.allTemplates[templateId]!.incrementIssuedSupply())
             recipientCollection.deposit(token: <-newNFT)
         }
 
@@ -448,7 +448,7 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
     
     //method to create empty Collection
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
-        return <- create TroonAtomicStandardContract.Collection()
+        return <- create TroonAtomicStandard.Collection()
     }
 
     //method to create Admin Resources
@@ -458,49 +458,49 @@ pub contract TroonAtomicStandardContract: NonFungibleToken {
 
     //method to get all brands
     pub fun getAllBrands(): {UInt64: Brand} {
-        return TroonAtomicStandardContract.allBrands
+        return TroonAtomicStandard.allBrands
     }
 
     //method to get brand by id
     pub fun getBrandById(brandId: UInt64): Brand {
         pre {
-            TroonAtomicStandardContract.allBrands[brandId] != nil: "brand Id does not exists"
+            TroonAtomicStandard.allBrands[brandId] != nil: "brand Id does not exists"
         }
-        return TroonAtomicStandardContract.allBrands[brandId]!
+        return TroonAtomicStandard.allBrands[brandId]!
     }
 
     //method to get all schema
     pub fun getAllSchemas(): {UInt64: Schema} {
-        return TroonAtomicStandardContract.allSchemas
+        return TroonAtomicStandard.allSchemas
     }
 
     //method to get schema by id
     pub fun getSchemaById(schemaId: UInt64): Schema {
         pre {
-            TroonAtomicStandardContract.allSchemas[schemaId] != nil: "schema id does not exist"
+            TroonAtomicStandard.allSchemas[schemaId] != nil: "schema id does not exist"
         }
-        return TroonAtomicStandardContract.allSchemas[schemaId]!
+        return TroonAtomicStandard.allSchemas[schemaId]!
     }
 
     //method to get all templates
     pub fun getAllTemplates(): {UInt64: Template} {
-        return TroonAtomicStandardContract.allTemplates
+        return TroonAtomicStandard.allTemplates
     }
 
     //method to get template by id
     pub fun getTemplateById(templateId: UInt64): Template {
         pre {
-            TroonAtomicStandardContract.allTemplates[templateId]!=nil: "Template id does not exist"
+            TroonAtomicStandard.allTemplates[templateId]!=nil: "Template id does not exist"
         }
-        return TroonAtomicStandardContract.allTemplates[templateId]!
+        return TroonAtomicStandard.allTemplates[templateId]!
     } 
 
     //method to get nft-data by id
     pub fun getTroonAtomicNFTDataById(nftId: UInt64): TroonAtomicNFTData {
         pre {
-            TroonAtomicStandardContract.allNFTs[nftId]!=nil:"nft id does not exist"
+            TroonAtomicStandard.allNFTs[nftId]!=nil:"nft id does not exist"
         }
-        return TroonAtomicStandardContract.allNFTs[nftId]!
+        return TroonAtomicStandard.allNFTs[nftId]!
     }
 
     //Initialize all variables with default values

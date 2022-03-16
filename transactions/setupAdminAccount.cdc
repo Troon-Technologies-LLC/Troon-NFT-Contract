@@ -1,29 +1,29 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-
+import TroonAtomicStandard from 0x3a57788afdda9ea7
+import NonFungibleToken from 0x631e88ae7f1d7c20
 
 transaction() {
     prepare(signer: AuthAccount) {
         // save the resource to the signer's account storage
-        if signer.getLinkTarget(TroonAtomicStandardContract.NFTMethodsCapabilityPrivatePath) == nil {
-            let adminResouce <- TroonAtomicStandardContract.createAdminResource()
-            signer.save(<- adminResouce, to: TroonAtomicStandardContract.AdminResourceStoragePath)
+        if signer.getLinkTarget(TroonAtomicStandard.NFTMethodsCapabilityPrivatePath) == nil {
+            let adminResouce <- TroonAtomicStandard.createAdminResource()
+            signer.save(<- adminResouce, to: TroonAtomicStandard.AdminResourceStoragePath)
             // link the UnlockedCapability in private storage
-            signer.link<&{TroonAtomicStandardContract.NFTMethodsCapability}>(
-                TroonAtomicStandardContract.NFTMethodsCapabilityPrivatePath,
-                target: TroonAtomicStandardContract.AdminResourceStoragePath
+            signer.link<&{TroonAtomicStandard.NFTMethodsCapability}>(
+                TroonAtomicStandard.NFTMethodsCapabilityPrivatePath,
+                target: TroonAtomicStandard.AdminResourceStoragePath
             )
         }
 
-        signer.link<&{TroonAtomicStandardContract.UserSpecialCapability}>(
+        signer.link<&{TroonAtomicStandard.UserSpecialCapability}>(
             /public/UserSpecialCapability,
-            target: TroonAtomicStandardContract.AdminResourceStoragePath
+            target: TroonAtomicStandard.AdminResourceStoragePath
         )
 
-        let collection  <- TroonAtomicStandardContract.createEmptyCollection()
+        let collection  <- TroonAtomicStandard.createEmptyCollection()
         // store the empty NFT Collection in account storage
-        signer.save( <- collection, to:TroonAtomicStandardContract.CollectionStoragePath)
+        signer.save( <- collection, to: TroonAtomicStandard.CollectionStoragePath)
         // create a public capability for the Collection
-        signer.link<&{TroonAtomicStandardContract.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandardContract.CollectionPublicPath, target:TroonAtomicStandardContract.CollectionStoragePath)
+        signer.link<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)
+        log("ok")
     }
 }

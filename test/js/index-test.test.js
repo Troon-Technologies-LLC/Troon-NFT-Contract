@@ -1,6 +1,18 @@
-import path from "path"
-import { init, emulator, getAccountAddress, deployContractByName, getContractCode, getContractAddress, getTransactionCode, getScriptCode, executeScript, sendTransaction } from "flow-js-testing";
-
+import path from "path";
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  deployContractByName,
+  getContractAddress,
+  getTransactionCode,
+  getScriptCode,
+  executeScript,
+  sendTransaction,
+  mintFlow,
+  getFlowBalance,
+} from "flow-js-testing";
+import { expect } from "@jest/globals";
 jest.setTimeout(10000);
 
 beforeAll(async () => {
@@ -8,12 +20,12 @@ beforeAll(async () => {
   const port = 8080;
 
   await init(basePath, { port });
-  //await emulator.start(port);
+  await emulator.start(port);
 });
 
 afterAll(async () => {
   const port = 8080;
-  //await emulator.stop(port);
+  await emulator.stop(port);
 });
 
 
@@ -55,8 +67,8 @@ describe("Deployment", () => {
     expect(name).toBe("NonFungibleToken");
 
   });
-  test("Deploy for TroonAtomicStandardContract", async () => {
-    const name = "TroonAtomicStandardContract"
+  test("Deploy for TroonAtomicStandard", async () => {
+    const name = "TroonAtomicStandard"
     const to = await getAccountAddress("Bob")
     let update = true
 
@@ -76,7 +88,7 @@ describe("Deployment", () => {
     } catch (e) {
       console.log(e);
     }
-    expect(name).toBe("TroonAtomicStandardContract");
+    expect(name).toBe("TroonAtomicStandard");
 
   });
 });
@@ -92,10 +104,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -128,10 +140,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -166,10 +178,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -203,10 +215,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -240,10 +252,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -277,10 +289,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -314,11 +326,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -348,11 +360,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -380,11 +392,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -414,11 +426,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -447,11 +459,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -484,11 +496,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -516,11 +528,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -551,11 +563,11 @@ describe("Scripts", () => {
     const Charlie = await getAccountAddress("Charlie");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
 
     let code = await getScriptCode({
@@ -585,11 +597,11 @@ describe("Scripts", () => {
     const Charlie = await getAccountAddress("Charlie");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const TroonAtomicStandardContract = await getContractAddress("TroonAtomicStandardContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      TroonAtomicStandardContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,

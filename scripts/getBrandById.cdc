@@ -1,5 +1,5 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 
 pub fun main(brandId:UInt64): AnyStruct{
-    return TroonAtomicStandardContract.getBrandById(brandId: brandId)
+    return TroonAtomicStandard.getBrandById(brandId: brandId)
 }

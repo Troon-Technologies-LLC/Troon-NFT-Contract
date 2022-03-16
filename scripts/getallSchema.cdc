@@ -1,6 +1,6 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 
 
-pub fun main(): {UInt64:TroonAtomicStandardContract.Schema} {
-    return TroonAtomicStandardContract.getAllSchemas()
+pub fun main(): {UInt64:TroonAtomicStandard.Schema} {
+    return TroonAtomicStandard.getAllSchemas()
 }

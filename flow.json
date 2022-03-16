@@ -5,7 +5,10 @@
 			"serviceAccount": "emulator-account"
 		}
 	},
-	"contracts": {},
+	"contracts": {
+		"TroonAtomicStandard": "./contracts/TroonAtomicStandard.cdc",
+		"NonFungibleToken": "./contracts/NonFungibleToken.cdc"
+	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
 		"mainnet": "access.mainnet.nodes.onflow.org:9000",

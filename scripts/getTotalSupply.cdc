@@ -1,7 +1,7 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 
 
 pub fun main(): UInt64 {
-    return TroonAtomicStandardContract.totalSupply
+    return TroonAtomicStandard.totalSupply
 
 }

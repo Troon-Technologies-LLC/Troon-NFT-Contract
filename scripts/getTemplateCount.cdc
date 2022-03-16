@@ -1,6 +1,6 @@
-import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 
 
 pub fun main() : Int {
-  return  TroonAtomicStandardContract.getAllTemplates().length
+  return  TroonAtomicStandard.getAllTemplates().length
 }
