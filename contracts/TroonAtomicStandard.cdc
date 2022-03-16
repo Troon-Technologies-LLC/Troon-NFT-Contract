@@ -1,4 +1,4 @@
-import NonFungibleToken from 0xf8d6e0586b0a20c7
+import NonFungibleToken from "./NonFungibleToken.cdc"
 
 pub contract TroonAtomicStandard: NonFungibleToken {
 
@@ -114,6 +114,12 @@ pub contract TroonAtomicStandard: NonFungibleToken {
                 immutableData != nil: "ImmutableData must not be nil"
             }
 
+            self.templateId = TroonAtomicStandard.lastIssuedTemplateId
+            self.brandId = brandId
+            self.schemaId = schemaId
+            self.maxSupply = maxSupply
+            self.immutableData = immutableData
+            self.issuedSupply = 0
             // Before creating template, we need to check template data, if it is valid against given schema or not
             let schema = TroonAtomicStandard.allSchemas[schemaId]!
             var invalidKey: String = ""
@@ -176,12 +182,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             }
             assert(isValidTemplate, message: "invalid template data. Error: ".concat(invalidKey))
 
-            self.templateId = TroonAtomicStandard.lastIssuedTemplateId
-            self.brandId = brandId
-            self.schemaId = schemaId
-            self.maxSupply = maxSupply
-            self.immutableData = immutableData
-            self.issuedSupply = 0
+            
         }
 
         // a method to increment issued supply for template

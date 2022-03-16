@@ -20,5 +20,9 @@
 			"key": "946a83e83c9d03f8e107bd8b1c12da9778826ebe95432cad79fbd8aa496724a6"
 		}
 	},
-	"deployments": {}
+	"deployments": {
+		"emulator": {
+			"emulator-account": ["NonFungibleToken", "TroonAtomicStandard"] 
+		}
+	}
 }
