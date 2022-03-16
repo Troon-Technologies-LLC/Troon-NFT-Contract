@@ -1,6 +1,6 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
 
 
-pub fun main(): {UInt64:NFTContract.Schema} {
-    return NFTContract.getAllSchemas()
+pub fun main(): {UInt64:TroonAtomicStandardContract.Schema} {
+    return TroonAtomicStandardContract.getAllSchemas()
 }

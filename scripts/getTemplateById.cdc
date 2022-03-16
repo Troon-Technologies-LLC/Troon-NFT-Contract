@@ -1,6 +1,6 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
 
 
-pub fun main(templateId: UInt64): NFTContract.Template {
-    return NFTContract.getTemplateById(templateId: templateId)
+pub fun main(templateId: UInt64): TroonAtomicStandardContract.Template {
+    return TroonAtomicStandardContract.getTemplateById(templateId: templateId)
 }

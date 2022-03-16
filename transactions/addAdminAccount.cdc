@@ -1,4 +1,4 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 transaction(admin: Address) {
@@ -9,13 +9,13 @@ transaction(admin: Address) {
 
         // get the public capability from the Admin's public storage
         let TemplateAdminResource = TemplateAdminAccount.getCapability
-            <&{NFTContract.UserSpecialCapability}>
+            <&{TroonAtomicStandardContract.UserSpecialCapability}>
             (/public/UserSpecialCapability)
             .borrow()
             ?? panic("could not borrow reference to UserSpecialCapability")
 
         //get admin refrence for adding AdminCapability
-         let adminRef = signer.getCapability<&NFTContract.AdminCapability>(NFTContract.AdminCapabilityPrivate).borrow() 
+         let adminRef = signer.getCapability<&TroonAtomicStandardContract.AdminCapability>(TroonAtomicStandardContract.AdminCapabilityPrivate).borrow() 
                         ?? panic("could not get borrow the refrence")
         let userResponse = adminRef.isWhiteListedAccount(_user: admin) 
         if(userResponse == false) {
@@ -25,8 +25,8 @@ transaction(admin: Address) {
         // get the private capability from the Authorized owner of the AdminResource
         // this will be the signer of this transaction
         let specialCapability = signer.getCapability
-            <&{NFTContract.NFTMethodsCapability}>
-            (NFTContract.NFTMethodsCapabilityPrivatePath) 
+            <&{TroonAtomicStandardContract.NFTMethodsCapability}>
+            (TroonAtomicStandardContract.NFTMethodsCapabilityPrivatePath) 
 
         // if the special capability is valid...
         if specialCapability.check() {

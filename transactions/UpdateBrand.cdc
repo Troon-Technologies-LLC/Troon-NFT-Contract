@@ -1,4 +1,4 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
@@ -6,8 +6,8 @@ transaction (brandId:UInt64,brandName:String){
   prepare(acct: AuthAccount) {
 
      let actorResource = acct.getCapability
-              <&{NFTContract.NFTMethodsCapability}>
-              (NFTContract.NFTMethodsCapabilityPrivatePath)
+              <&{TroonAtomicStandardContract.NFTMethodsCapability}>
+              (TroonAtomicStandardContract.NFTMethodsCapabilityPrivatePath)
               .borrow() ?? 
               panic("could not borrow a reference to the NFTMethodsCapability interface")
 

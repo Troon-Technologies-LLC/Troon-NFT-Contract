@@ -1,5 +1,5 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandardContract from "../contracts/TroonAtomicStandardContract.cdc"
 
 pub fun main(brandId:UInt64): AnyStruct{
-    return NFTContract.getBrandById(brandId: brandId)
+    return TroonAtomicStandardContract.getBrandById(brandId: brandId)
 }
