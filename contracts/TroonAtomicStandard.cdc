@@ -13,6 +13,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
     pub event BrandUpdated(brandId: UInt64, brandName: String, author: Address, data:{String: String})
     pub event SchemaCreated(schemaId: UInt64, schemaName: String, author: Address)
     pub event TemplateCreated(templateId: UInt64, brandId: UInt64, schemaId: UInt64, maxSupply: UInt64)
+    pub event TemplateRemoved(templateId: UInt64)
 
     // Paths
     pub let AdminResourceStoragePath: StoragePath
@@ -419,6 +420,19 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             self.ownedTemplates[TroonAtomicStandard.lastIssuedTemplateId] = newTemplate
             TroonAtomicStandard.lastIssuedTemplateId = TroonAtomicStandard.lastIssuedTemplateId + 1
         }
+
+         //method to remove template by id
+        pub fun removeTemplateById(templateId: UInt64): Bool {
+            pre {
+                templateId != nil: "invalid template id"
+                TroonAtomicStandard.allTemplates[templateId]!=nil: "template id does not exist"
+                TroonAtomicStandard.allTemplates[templateId]!.issuedSupply == 0: "could not remove template with given id"   
+            }
+            let mintsData =  TroonAtomicStandard.allTemplates.remove(key: templateId)
+            emit TemplateRemoved(templateId: templateId)
+            return true
+        }
+
 
         //method to mint NFT, only access by the verified user
         pub fun mintNFT(templateId: UInt64, account: Address) {
