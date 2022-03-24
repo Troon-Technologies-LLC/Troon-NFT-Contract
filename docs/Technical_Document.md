@@ -9,7 +9,7 @@ A common order of creating NFT would be
  - Create new Brand with `transactions/createBrand` using Admin Account.
  - Create new Schema with `transactions/createSchema` using Admin Account.
  - Create new Template with `transactions/createTemplate` using Admin Account.
- - Remove the Template with `transactions/removeTemplateById` using Admin Account.
+ - Remove the Template with `transactions/removeTemplate` using Admin Account.
  - Create NFT Receiver with `transaction/setupAccount` .
  - Create Mint of Templates and transfer to Address(having Setup Account enabled) with `transaction/mintNFT`
 You can also see the scripts in `transactions/scripts` to see how information
