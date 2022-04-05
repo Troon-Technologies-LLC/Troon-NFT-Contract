@@ -25,7 +25,7 @@ transaction(recipient:Address, withdrawID:UInt64) {
     execute {
         // get the recipient's public account object
         let recipient = getAccount(recipient)
-        let receiverRef = recipient.getCapability<&{NonFungibleToken.CollectionPublic}>(TroonAtomicStandard.CollectionPublicPath)
+        let receiverRef = recipient.getCapability<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandard.CollectionPublicPath)
             .borrow()
             ?? panic("Could not borrow receiver reference")
         // deposit the NFT in the receivers collection

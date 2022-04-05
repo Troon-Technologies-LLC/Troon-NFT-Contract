@@ -1,6 +1,6 @@
+
 import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-
 
 transaction() {
     prepare(signer: AuthAccount) {
@@ -22,8 +22,9 @@ transaction() {
 
         let collection  <- TroonAtomicStandard.createEmptyCollection()
         // store the empty NFT Collection in account storage
-        signer.save( <- collection, to:TroonAtomicStandard.CollectionStoragePath)
+        signer.save( <- collection, to: TroonAtomicStandard.CollectionStoragePath)
         // create a public capability for the Collection
-        signer.link<&{NonFungibleToken.CollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)
+        signer.link<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)
+        log("ok")
     }
 }

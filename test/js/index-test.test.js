@@ -1,6 +1,19 @@
-import path from "path"
-import { init, emulator, getAccountAddress, deployContractByName, getContractCode, getContractAddress, getTransactionCode, getScriptCode, executeScript, sendTransaction } from "flow-js-testing";
-
+import path from "path";
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  deployContractByName,
+  getContractCode,
+  getContractAddress,
+  getTransactionCode,
+  getScriptCode,
+  executeScript,
+  sendTransaction,
+  mintFlow,
+  getFlowBalance,
+} from "flow-js-testing";
+import { expect } from "@jest/globals";
 jest.setTimeout(10000);
 
 beforeAll(async () => {
