@@ -55,8 +55,8 @@ describe("Deployment", () => {
     expect(name).toBe("NonFungibleToken");
 
   });
-  test("Deploy for NFTContract", async () => {
-    const name = "NFTContract"
+  test("Deploy for TroonAtomicStandard", async () => {
+    const name = "TroonAtomicStandard"
     const to = await getAccountAddress("Bob")
     let update = true
 
@@ -76,7 +76,7 @@ describe("Deployment", () => {
     } catch (e) {
       console.log(e);
     }
-    expect(name).toBe("NFTContract");
+    expect(name).toBe("TroonAtomicStandard");
 
   });
 });
@@ -92,10 +92,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -128,10 +128,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -166,10 +166,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -203,10 +203,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -240,10 +240,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -277,10 +277,10 @@ describe("Transactions", () => {
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -314,11 +314,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -348,11 +348,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -380,11 +380,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -414,11 +414,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -447,11 +447,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -484,11 +484,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -516,11 +516,11 @@ describe("Scripts", () => {
     const Bob = await getAccountAddress("Bob");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,
@@ -551,11 +551,11 @@ describe("Scripts", () => {
     const Charlie = await getAccountAddress("Charlie");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
 
     let code = await getScriptCode({
@@ -585,11 +585,11 @@ describe("Scripts", () => {
     const Charlie = await getAccountAddress("Charlie");
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NFTContract = await getContractAddress("NFTContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
 
     const addressMap = {
       NonFungibleToken,
-      NFTContract,
+      TroonAtomicStandard,
     }
     let code = await getScriptCode({
       name,

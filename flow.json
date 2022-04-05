@@ -1,21 +1,31 @@
 {
-	"emulators": {
-		"default": {
-			"port": 3569,
-			"serviceAccount": "emulator-account"
-		}
-	},
-	"contracts": {},
-	"networks": {
-		"emulator": "127.0.0.1:3569",
-		"mainnet": "access.mainnet.nodes.onflow.org:9000",
-		"testnet": "access.devnet.nodes.onflow.org:9000"
-	},
-	"accounts": {
-		"emulator-account": {
-			"address": "f8d6e0586b0a20c7",
-			"key": "946a83e83c9d03f8e107bd8b1c12da9778826ebe95432cad79fbd8aa496724a6"
-		}
-	},
-	"deployments": {}
+  "emulators": {
+    "default": {
+      "port": 3569,
+      "serviceAccount": "emulator-account"
+    }
+  },
+  "contracts": {
+    "TroonAtomicStandard": "./contracts/TroonAtomicStandard.cdc"
+  },
+  "networks": {
+    "emulator": "127.0.0.1:3569",
+    "mainnet": "access.mainnet.nodes.onflow.org:9000",
+    "testnet": "access.devnet.nodes.onflow.org:9000"
+  },
+  "accounts": {
+    "emulator-account": {
+      "address": "f8d6e0586b0a20c7",
+      "key": "9cbb4c07396591063a94ceb705a1c7a0f15d93b36337e3a1a78eef37694dd7e0"
+    },
+    "testnet-account": {
+      "address": "0xb5cf74380579a70a",
+      "key": "01e642686d0adf5450090539c54407fa59df9943faf5d7e26269e04a340ee822"
+    }
+  },
+  "deployments": {
+    "testnet": {
+      "testnet-account": ["TroonAtomicStandard"]
+    }
+  }
 }

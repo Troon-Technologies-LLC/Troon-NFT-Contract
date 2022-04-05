@@ -1,10 +1,10 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
 pub fun main(address: Address) : {UInt64: AnyStruct}{
     let account1 = getAccount(address)
-    let acct1Capability =  account1.getCapability(NFTContract.CollectionPublicPath)
+    let acct1Capability =  account1.getCapability(TroonAtomicStandard.CollectionPublicPath)
                             .borrow<&{NonFungibleToken.CollectionPublic}>()
                             ??panic("could not borrow receiver reference ")
 
@@ -13,8 +13,8 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
     var dict : {UInt64: AnyStruct} = {}
 
     for nftId in nftIds {
-        var nftData = NFTContract.getNFTDataById(nftId: nftId)
-        var templateDataById =  NFTContract.getTemplateById(templateId: nftData.templateID)
+        var nftData = TroonAtomicStandard.getNFTDataById(nftId: nftId)
+        var templateDataById =  TroonAtomicStandard.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
         

@@ -1,25 +1,25 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 transaction (schemaName:String){
 
    prepare(acct: AuthAccount) {
       let actorResource = acct.getCapability
-            <&{NFTContract.NFTMethodsCapability}>
-            (NFTContract.NFTMethodsCapabilityPrivatePath)
+            <&{TroonAtomicStandard.NFTMethodsCapability}>
+            (TroonAtomicStandard.NFTMethodsCapabilityPrivatePath)
             .borrow() ?? 
             panic("could not borrow a reference to the NFTMethodsCapability interface")
 
-         let format : {String: NFTContract.SchemaType} = {
-            "artist" : NFTContract.SchemaType.String,
-            "artistEmail"  :  NFTContract.SchemaType.String,
-            "title":NFTContract.SchemaType.String,
-            "mintType":  NFTContract.SchemaType.String,
-            "nftType":  NFTContract.SchemaType.String,
-            "rarity":  NFTContract.SchemaType.String,
-            "contectType":  NFTContract.SchemaType.String,
-            "contectValue":  NFTContract.SchemaType.String,
-            "extras": NFTContract.SchemaType.Any
+         let format : {String: TroonAtomicStandard.SchemaType} = {
+            "artist" : TroonAtomicStandard.SchemaType.String,
+            "artistEmail"  :  TroonAtomicStandard.SchemaType.String,
+            "title":TroonAtomicStandard.SchemaType.String,
+            "mintType":  TroonAtomicStandard.SchemaType.String,
+            "nftType":  TroonAtomicStandard.SchemaType.String,
+            "rarity":  TroonAtomicStandard.SchemaType.String,
+            "contectType":  TroonAtomicStandard.SchemaType.String,
+            "contectValue":  TroonAtomicStandard.SchemaType.String,
+            "extras": TroonAtomicStandard.SchemaType.Any
             }
 
          actorResource.createSchema(schemaName: schemaName, format: format)

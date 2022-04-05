@@ -1,29 +1,29 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
 transaction() {
     prepare(signer: AuthAccount) {
         // save the resource to the signer's account storage
-        if signer.getLinkTarget(NFTContract.NFTMethodsCapabilityPrivatePath) == nil {
-            let adminResouce <- NFTContract.createAdminResource()
-            signer.save(<- adminResouce, to: NFTContract.AdminResourceStoragePath)
+        if signer.getLinkTarget(TroonAtomicStandard.NFTMethodsCapabilityPrivatePath) == nil {
+            let adminResouce <- TroonAtomicStandard.createAdminResource()
+            signer.save(<- adminResouce, to: TroonAtomicStandard.AdminResourceStoragePath)
             // link the UnlockedCapability in private storage
-            signer.link<&{NFTContract.NFTMethodsCapability}>(
-                NFTContract.NFTMethodsCapabilityPrivatePath,
-                target: NFTContract.AdminResourceStoragePath
+            signer.link<&{TroonAtomicStandard.NFTMethodsCapability}>(
+                TroonAtomicStandard.NFTMethodsCapabilityPrivatePath,
+                target: TroonAtomicStandard.AdminResourceStoragePath
             )
         }
 
-        signer.link<&{NFTContract.UserSpecialCapability}>(
+        signer.link<&{TroonAtomicStandard.UserSpecialCapability}>(
             /public/UserSpecialCapability,
-            target: NFTContract.AdminResourceStoragePath
+            target: TroonAtomicStandard.AdminResourceStoragePath
         )
 
-        let collection  <- NFTContract.createEmptyCollection()
+        let collection  <- TroonAtomicStandard.createEmptyCollection()
         // store the empty NFT Collection in account storage
-        signer.save( <- collection, to:NFTContract.CollectionStoragePath)
+        signer.save( <- collection, to:TroonAtomicStandard.CollectionStoragePath)
         // create a public capability for the Collection
-        signer.link<&{NonFungibleToken.CollectionPublic}>(NFTContract.CollectionPublicPath, target:NFTContract.CollectionStoragePath)
+        signer.link<&{NonFungibleToken.CollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)
     }
 }

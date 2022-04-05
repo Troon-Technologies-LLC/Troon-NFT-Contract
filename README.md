@@ -1,14 +1,14 @@
 ## Overview
 
-## Summary of NFTContract
+## Summary of TroonAtomicStandard
 
-NFTContract is a Non Fungible Token (NFT) standard for Flow blockchain.
+TroonAtomicStandard is a Non Fungible Token (NFT) standard for Flow blockchain.
 It offers a powerful set while keeping unnecessary complexity to a minimum and focus on efficiency.
 Our Contract consists of different parts like Brand, Schema, Templates and NFTs, which serve different purposes and often reference each other.
 
 ## Brand
 
-A brand is an intangible marketing or business concept that helps people identify a company, product, or individual. People often confuse brands with things like logos, slogans, or other recognizable marks. Brand is a symbol of organization that represent parent company. Organizations can create their own Brands in FLOW Blockchain using NFTContract. We have set of restrictions on flow Accounts. In order to create a brand you need to be whitelisted(Approval of Super Admin).
+A brand is an intangible marketing or business concept that helps people identify a company, product, or individual. People often confuse brands with things like logos, slogans, or other recognizable marks. Brand is a symbol of organization that represent parent company. Organizations can create their own Brands in FLOW Blockchain using TroonAtomicStandard. We have set of restrictions on flow Accounts. In order to create a brand you need to be whitelisted(Approval of Super Admin).
 
 ### Schema
 
@@ -26,7 +26,6 @@ Schemas are used to define a data structure of NFT. Schema is like an interface 
 
 Templates are blueprints of NFTs. For creating NFTs, we use Templates as defined schemas. Flow Blockchains are storing metadata offchain but only we are creating a structure where we can store metadata onchain.
 
-
 ## ✨ Getting Started
 
 ### Clone Project and Install Dependencies
@@ -37,7 +36,7 @@ Templates are blueprints of NFTs. For creating NFTs, we use Templates as defined
 
 [see Documentation](docs/Directory_Structure.md)
 
-## Technical Documentation of NFTContract(For more technical details please use this link)
+## Technical Documentation of TroonAtomicStandard(For more technical details please use this link)
 
 [see Documentation](docs/Technical_Document.md)
 
@@ -49,6 +48,6 @@ Templates are blueprints of NFTs. For creating NFTs, we use Templates as defined
 
 [see Documentation](test/js/README.md)
 
-## Technical Documentation of NFTContract(For more technical details please use this link)
+## Technical Documentation of TroonAtomicStandard(For more technical details please use this link)
 
 [see Documentation](docs/Technical_Document.md)

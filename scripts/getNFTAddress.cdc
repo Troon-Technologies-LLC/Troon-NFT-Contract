@@ -1,4 +1,4 @@
-import NFTContract from "../contracts/NFTContract.cdc"
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
@@ -8,7 +8,7 @@ pub fun main(address: Address) : [UInt64] {
     // Get both public account objects
     let account1 = getAccount(address)
     // Find the public Receiver capability for their Collections
-    let acct1Capability =  account1.getCapability(NFTContract.CollectionPublicPath)
+    let acct1Capability =  account1.getCapability(TroonAtomicStandard.CollectionPublicPath)
                            .borrow<&{NonFungibleToken.CollectionPublic}>()
                             ??panic("could not borrow receiver reference ")
     return  acct1Capability.getIDs()

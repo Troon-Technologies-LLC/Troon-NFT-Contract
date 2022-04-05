@@ -35,10 +35,10 @@ const (
 // Input: Empty
 // Expected Output: NFT Supply initialized with zero
 // Test-case-type: Positive
-func Test_NFTContractTestDeployment(test *testing.T) {
+func Test_TroonAtomicStandardTestDeployment(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, _, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, _, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	test.Run("Should have initialized Supply field zero correctly", func(test *testing.T) {
 		supply := executeScriptAndCheck(test, emulator, NowwhereGenerateGetSupplyScript(nonfungibleAddr, ownerAddr), nil)
@@ -55,13 +55,13 @@ func Test_NFTContractTestDeployment(test *testing.T) {
 func Test_GetBrand_EmptyOnDeployment(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, _, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, _, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	test.Run("Should have Brand initialized field correctly", func(test *testing.T) {
 		supply := executeScriptAndCheck(
 			test,
 			emulator,
-			NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr),
+			TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr),
 			nil)
 
 		assert.EqualValues(test, CadenceInt(zero), supply)
@@ -75,11 +75,11 @@ func Test_GetBrand_EmptyOnDeployment(test *testing.T) {
 func Test_CreateBrand_WithAnyAddress(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check Brand not initialized
 	test.Run("Should have Zero Brand count", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(zero), brandCount)
 	})
 
@@ -87,7 +87,7 @@ func Test_CreateBrand_WithAnyAddress(test *testing.T) {
 	brandName, _ := cadence.NewString(BrandMetadataValue)
 	metadata := []cadence.KeyValuePair{{Key: brandNameField, Value: brandName}}
 	brandMetadata := cadence.NewDictionary(metadata)
-	NFTContractCreateBrandTransaction(
+	TroonAtomicStandardCreateBrandTransaction(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -101,7 +101,7 @@ func Test_CreateBrand_WithAnyAddress(test *testing.T) {
 
 	// Post Condition: Check Brand initialized properly
 	test.Run("Should have initialized Brands correctly", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(zero), brandCount)
 	})
 }
@@ -113,11 +113,11 @@ func Test_CreateBrand_WithAnyAddress(test *testing.T) {
 func Test_CreateBrand_Success(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check brand not initialized
 	test.Run("Should have Zero Brand count", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(zero), brandCount)
 	})
 
@@ -127,7 +127,7 @@ func Test_CreateBrand_Success(test *testing.T) {
 	brandName, _ := cadence.NewString(BrandMetadataValue)
 	metadata := []cadence.KeyValuePair{{Key: brandNameField, Value: brandName}}
 	brand := cadence.NewDictionary(metadata)
-	NFTContractCreateBrandTransaction(
+	TroonAtomicStandardCreateBrandTransaction(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -141,7 +141,7 @@ func Test_CreateBrand_Success(test *testing.T) {
 
 	// Post Condition: Check Brand initialized properly
 	test.Run("Should have initialized Brands correctly", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(one), brandCount)
 	})
 }
@@ -153,11 +153,11 @@ func Test_CreateBrand_Success(test *testing.T) {
 func Test_UpdateBrand_Success(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check brand not initialized
 	test.Run("Should have Zero brand count", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(zero), brandCount)
 	})
 
@@ -167,17 +167,17 @@ func Test_UpdateBrand_Success(test *testing.T) {
 	brandName, _ := cadence.NewString(BrandMetadataValue)
 	metadata := []cadence.KeyValuePair{{Key: brandNameField, Value: brandName}}
 	brand := cadence.NewDictionary(metadata)
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brand)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brand)
 
 	// Post Condition: Check brand initialized properly
 	test.Run("Should have initialized Brands correctly", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(one), brandCount)
 	})
-	//brandID := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandIDsScript(nonfungibleAddr, ownerAddr), nil)
+	//brandID := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandIDsScript(nonfungibleAddr, ownerAddr), nil)
 	//assert.EqualValues(test, CadenceInt(one), brandID)
 	//	assert.EqualValues(test, CadenceInt(one), brandID)
-	NFTContractUpdateBrandTransaction(
+	TroonAtomicStandardUpdateBrandTransaction(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -195,7 +195,7 @@ func Test_UpdateBrand_Success(test *testing.T) {
 	}
 	// Post Condition: Check Brand metadata updated initialized properly
 	test.Run("Should update Brands correctly", func(test *testing.T) {
-		ReturnedbrandModel := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandNameScript(nonfungibleAddr, ownerAddr), [][]byte{jsoncdc.MustEncode(cadence.NewUInt64(one))})
+		ReturnedbrandModel := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandNameScript(nonfungibleAddr, ownerAddr), [][]byte{jsoncdc.MustEncode(cadence.NewUInt64(one))})
 		fmt.Println("ReturnedbrandModel", ReturnedbrandModel)
 		assert.Contains(test, reg.ReplaceAllString(ReturnedbrandModel.String(), ""), reg.ReplaceAllString(UpdateBrandMetadataValue, ""))
 	})
@@ -209,11 +209,11 @@ func Test_UpdateBrand_Success(test *testing.T) {
 func Test_UpdateBrand_WithInvalidId(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check brand not initialized
 	test.Run("Should have Zero brand count", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(zero), brandCount)
 	})
 
@@ -224,18 +224,18 @@ func Test_UpdateBrand_WithInvalidId(test *testing.T) {
 
 	metadata := []cadence.KeyValuePair{{Key: brandNameField, Value: brandName}}
 	brand := cadence.NewDictionary(metadata)
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brand)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brand)
 
 	// Post Condition: Check brand initialized properly
 	test.Run("Should have initialized Brands correctly", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(one), brandCount)
 	})
 
-	//brandID := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandIDsScript(nonfungibleAddr, ownerAddr), nil)
+	//brandID := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandIDsScript(nonfungibleAddr, ownerAddr), nil)
 	//assert.EqualValues(test, CadenceInt(one), brandID)
 	//	assert.EqualValues(test, CadenceInt(one), brandID)
-	NFTContractUpdateBrandTransaction(
+	TroonAtomicStandardUpdateBrandTransaction(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -254,7 +254,7 @@ func Test_UpdateBrand_WithInvalidId(test *testing.T) {
 
 	// Post Condition: Check Brand name not updated properly
 	test.Run("Should contains metadata Brands correctly", func(test *testing.T) {
-		ReturnedbrandModel := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandNameScript(nonfungibleAddr, ownerAddr), [][]byte{jsoncdc.MustEncode(cadence.NewUInt64(one))})
+		ReturnedbrandModel := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandNameScript(nonfungibleAddr, ownerAddr), [][]byte{jsoncdc.MustEncode(cadence.NewUInt64(one))})
 		/// remove all characters other than alphabets
 		assert.Contains(test, reg.ReplaceAllString(ReturnedbrandModel.String(), ""), reg.ReplaceAllString(BrandMetadataValue, ""))
 	})
@@ -270,7 +270,7 @@ func Test_UpdateBrand_WithInvalidId(test *testing.T) {
 
 func Test_CreateSchema_InstanceOnDeployment(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, _, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, _, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check brand not initialized
 	test.Run("Should have Zero brand count", func(test *testing.T) {
@@ -286,7 +286,7 @@ func Test_CreateSchema_InstanceOnDeployment(test *testing.T) {
 
 func Test_CreateSchema_Success(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check Schema not initialized
 	test.Run("Should have Zero brand count", func(test *testing.T) {
@@ -313,7 +313,7 @@ func Test_CreateSchema_Success(test *testing.T) {
 
 func Test_CreateSchema_InvalidStructure(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Pre Condition: Check Schema not initialized
 	test.Run("Should have Zero Schema count", func(test *testing.T) {
@@ -343,13 +343,13 @@ func Test_CreateSchema_InvalidStructure(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_WithoutBrandID(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
 	TemplateNameField, _ := cadence.NewString(TemplateMetdataKey)
 
-	//NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, Name, play)
+	//TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, Name, play)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, TemplateName)
 
 	// metadata
@@ -382,7 +382,7 @@ func Test_CreateTemplate_WithoutBrandID(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_WithoutSchemaID(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -390,7 +390,7 @@ func Test_CreateTemplate_WithoutSchemaID(test *testing.T) {
 	brandField := cadence.NewDictionary(metadata)
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandField)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandField)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: brandNameField, Value: cadence.NewUInt64(2)}}
 	// Create Template Transaction with brand ID:1 and schema ID:1 and 2 max Supply
@@ -409,7 +409,7 @@ func Test_CreateTemplate_WithoutSchemaID(test *testing.T) {
 // Test-case-type: Positive
 func Test_CreateTemplate_withOwnBrandIDandSchemaID(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -419,7 +419,7 @@ func Test_CreateTemplate_withOwnBrandIDandSchemaID(test *testing.T) {
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
@@ -451,7 +451,7 @@ func Test_CreateTemplate_withOwnBrandIDandSchemaID(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_withzeroSupply(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -461,7 +461,7 @@ func Test_CreateTemplate_withzeroSupply(test *testing.T) {
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
@@ -492,7 +492,7 @@ func Test_CreateTemplate_withzeroSupply(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_SchemaCheck(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -502,7 +502,7 @@ func Test_CreateTemplate_SchemaCheck(test *testing.T) {
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: WrongTemplateField, Value: cadence.NewInt(two)}}
@@ -533,7 +533,7 @@ func Test_CreateTemplate_SchemaCheck(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_withOthersBrandIDandSchemaID(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, adminSigner, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, adminSigner, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -543,12 +543,12 @@ func Test_CreateTemplate_withOthersBrandIDandSchemaID(test *testing.T) {
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, adminSigner)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, adminSigner, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, adminSigner, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, adminSigner, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
 	// Normal User
-	userAddress, usersigner := NFTContractSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
+	userAddress, usersigner := TroonAtomicStandardSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 
 	// Create Template Transaction  with brand ID:1 and schema ID:1 and 2 max Supply
 	NowwhereCreateTemplateTransaction(
@@ -577,7 +577,7 @@ func Test_CreateTemplate_withOthersBrandIDandSchemaID(test *testing.T) {
 // Test-case-type: Negative
 func Test_CreateTemplate_withOwnBrandIDandOthersSchemaID(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, adminSigner, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, adminSigner, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	brandNameField, _ := cadence.NewString(BrandMetadataKey)
 	brandName, _ := cadence.NewString(BrandMetadataValue)
@@ -588,7 +588,7 @@ func Test_CreateTemplate_withOwnBrandIDandOthersSchemaID(test *testing.T) {
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, adminSigner)
 
 	// 2nd account(admin) configure
-	userAddress, usersigner := NFTContractSetupNewAdminAccount(
+	userAddress, usersigner := TroonAtomicStandardSetupNewAdminAccount(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -596,7 +596,7 @@ func Test_CreateTemplate_withOwnBrandIDandOthersSchemaID(test *testing.T) {
 		shouldNotFail, // if error arise throw error
 	)
 
-	NFTContractAddAdminCapability(
+	TroonAtomicStandardAddAdminCapability(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -606,10 +606,10 @@ func Test_CreateTemplate_withOwnBrandIDandOthersSchemaID(test *testing.T) {
 		userAddress,   // setup Admin account to that address
 	)
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, userAddress, usersigner, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, userAddress, usersigner, shouldNotFail, BrandName, brandMetadata)
 	// Post Condition: Check brand initialized properly
 	test.Run("Should have initialized brand correctly", func(test *testing.T) {
-		brandCount := executeScriptAndCheck(test, emulator, NFTContractGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
+		brandCount := executeScriptAndCheck(test, emulator, TroonAtomicStandardGenerateGetBrandCountScript(nonfungibleAddr, ownerAddr), nil)
 		assert.EqualValues(test, CadenceInt(one), brandCount)
 	})
 
@@ -660,10 +660,10 @@ func Test_CreateTemplate_withOwnBrandIDandOthersSchemaID(test *testing.T) {
 // Test-case-type: Negateive
 func Test_MintTemplate_WithoutTemplate(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// Create Setup New Account
-	receiverAccount, _ := NFTContractSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
+	receiverAccount, _ := TroonAtomicStandardSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 	var templateId uint64 = one
 	NowwhereMintTemplateTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldFail, templateId, receiverAccount)
 
@@ -681,7 +681,7 @@ func Test_MintTemplate_WithoutTemplate(test *testing.T) {
 
 func Test_MintTemplate_Success(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
@@ -691,7 +691,7 @@ func Test_MintTemplate_Success(test *testing.T) {
 	brandMetadata := cadence.NewDictionary(metadata)
 	TemplateField, _ := cadence.NewString(SchemaName) // Metdata Template Field
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
@@ -711,7 +711,7 @@ func Test_MintTemplate_Success(test *testing.T) {
 		metadatatemplate)
 
 	// Directly Minted to reciever address
-	receiverAddress, _ := NFTContractSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
+	receiverAddress, _ := TroonAtomicStandardSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 	var templateId uint64 = one
 	NowwhereMintTemplateTransaction(
 		test,
@@ -746,7 +746,7 @@ func Test_MintTemplate_Success(test *testing.T) {
 
 func Test_MintTemplate_WithoutSetupUser(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
@@ -756,7 +756,7 @@ func Test_MintTemplate_WithoutSetupUser(test *testing.T) {
 	brandMetadata := cadence.NewDictionary(metadata)
 	TemplateField, _ := cadence.NewString(SchemaName) // Metdata Template Field
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
@@ -778,7 +778,7 @@ func Test_MintTemplate_WithoutSetupUser(test *testing.T) {
 	receiverAddress := GenerateAddress(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 
 	// Directly Minted to reciever address
-	//receiverAddress, _ := NFTContractSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
+	//receiverAddress, _ := TroonAtomicStandardSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 	var templateId uint64 = one
 	NowwhereMintTemplateTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldFail, templateId, receiverAddress)
 
@@ -797,7 +797,7 @@ func Test_MintTemplate_WithoutSetupUser(test *testing.T) {
 func Test_TransferNFT_Success(test *testing.T) {
 	emulator := newEmulator()
 
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
@@ -807,7 +807,7 @@ func Test_TransferNFT_Success(test *testing.T) {
 	brandMetadata := cadence.NewDictionary(metadata)
 	TemplateField, _ := cadence.NewString(SchemaName) // Metdata Template Field
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
@@ -829,7 +829,7 @@ func Test_TransferNFT_Success(test *testing.T) {
 	// Mint NFT to own Address
 	NowwhereMintTemplateTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, templateId, ownerAddr)
 	// Setup Account
-	receiverAddress, _ := NFTContractSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
+	receiverAddress, _ := TroonAtomicStandardSetupAccount(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail)
 	// Post Condition: Check brand initialized properly
 	test.Run("Should have initialized brand correctly", func(test *testing.T) {
 		MintCount := executeScriptAndCheck(test, emulator, NowwhereGenerateGetNFTAddressScript(nonfungibleAddr, ownerAddr),
@@ -838,7 +838,7 @@ func Test_TransferNFT_Success(test *testing.T) {
 	})
 
 	// NFT transfer with parameter NFT ID = 1
-	NFTContractTransferNFT(
+	TroonAtomicStandardTransferNFT(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -870,7 +870,7 @@ func Test_TransferNFT_Success(test *testing.T) {
 
 func Test_MintTemplate_morethanSupply(test *testing.T) {
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
 
@@ -880,7 +880,7 @@ func Test_MintTemplate_morethanSupply(test *testing.T) {
 	brandMetadata := cadence.NewDictionary(metadata)
 	TemplateField, _ := cadence.NewString(SchemaName) // Metdata Template Field
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
@@ -967,7 +967,7 @@ func Test_MintTemplate_morethanSupply(test *testing.T) {
 func Test_DestroyNFT_Success(test *testing.T) {
 
 	emulator := newEmulator()
-	nonfungibleAddr, ownerAddr, signer, _ := NFTContractDeployContracts(emulator, test)
+	nonfungibleAddr, ownerAddr, signer, _ := TroonAtomicStandardDeployContracts(emulator, test)
 
 	// 1st account(admin) configure
 	SetupAdminAndGiveCapability(test, emulator, nonfungibleAddr, ownerAddr, shouldNotFail, signer)
@@ -978,7 +978,7 @@ func Test_DestroyNFT_Success(test *testing.T) {
 	brandMetadata := cadence.NewDictionary(metadata)
 	TemplateField, _ := cadence.NewString(SchemaName) // Metdata Template Field
 
-	NFTContractCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
+	TroonAtomicStandardCreateBrandTransaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, BrandName, brandMetadata)
 	CreateSchema_Transaction(test, emulator, nonfungibleAddr, ownerAddr, ownerAddr, signer, shouldNotFail, SchemaName)
 	// metadata
 	metadatatemplate := []cadence.KeyValuePair{{Key: TemplateField, Value: TemplateField}}
@@ -1026,7 +1026,7 @@ func Test_DestroyNFT_Success(test *testing.T) {
 		assert.EqualValues(test, CadenceArray(one), MintCount)
 	})
 	// NFT transfer with parameter NFT ID = 1
-	NFTContractDestroyNFT(
+	TroonAtomicStandardDestroyNFT(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -1047,7 +1047,7 @@ func Test_DestroyNFT_Success(test *testing.T) {
 
 // Give capability to user after account setup
 func SetupAdminAndGiveCapability(test *testing.T, emulator *emulator.Blockchain, nonfungibleAddr flow.Address, ownerAddr flow.Address, shouldNotFail bool, signer crypto.Signer) {
-	NFTContractSetupAdminAccount(
+	TroonAtomicStandardSetupAdminAccount(
 		test,
 		emulator,
 		nonfungibleAddr,
@@ -1057,7 +1057,7 @@ func SetupAdminAndGiveCapability(test *testing.T, emulator *emulator.Blockchain,
 		signer,    // Signer of Admin Account
 	)
 
-	NFTContractAddAdminCapability(
+	TroonAtomicStandardAddAdminCapability(
 		test,
 		emulator,
 		nonfungibleAddr,
