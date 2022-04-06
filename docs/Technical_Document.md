@@ -19,16 +19,6 @@ A common order of creating NFT would be
 - Contract Initialized ->
   `pub event ContractInitialized()`
   This event is emitted when the `TroonAtomicStandard` will be initialized.
- - Create Admin Account with `transaction/setupAdminAccount`.
- - Owner then make this account Admin, and gives that account ability to create own Brand, Schema and Template with `transactions/addAdminAccount` 
- - Create new Brand with `transactions/createBrand` using Admin Account.
- - Create new Schema with `transactions/createSchema` using Admin Account.
- - Create new Template with `transactions/createTemplate` using Admin Account.
- - Remove the Template with `transactions/removeTemplate` using Admin Account.
- - Create NFT Receiver with `transaction/setupAccount` .
- - Create Mint of Templates and transfer to Address(having Setup Account enabled) with `transaction/mintNFT`
-You can also see the scripts in `transactions/scripts` to see how information
-can be read from the NFTContract. 
 
 - Event for Withdraw NFT ->
   `pub event Withdraw(id: UInt64, from: Address?)`
@@ -37,10 +27,6 @@ can be read from the NFTContract.
 - Event for Deposit NFT ->
   `pub event Deposit(id: UInt64, to: Address?)`
   This event is emitted when NFT will be deposited.
-
-- Event for Borrowed NFT ->
-  `pub event NFTBorrowed(id: UInt64)`
-  This event is emitted when NFT will be borrowed.
 
 - Event for Brand ->
   `pub event BrandCreated(brandId: UInt64, brandName: String, author: Address, data: {String:String})`
@@ -55,16 +41,16 @@ can be read from the NFTContract.
   Emitted when a new Schema will be created
 
 - Event for Template ->
-`pub event TemplateCreated(templateId: UInt64, brandId: UInt64, schemaId: UInt64, maxSupply: UInt64)`
-Emitted when a new Template will be created
+  `pub event TemplateCreated(templateId: UInt64, brandId: UInt64, schemaId: UInt64, maxSupply: UInt64)`
+  Emitted when a new Template will be created
 
--  Event for Template Mint ->
-`pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64)`
-Emitted when a Template will be Minted and save as NFT
+- Event for Template Mint ->
+  `pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64)`
+  Emitted when a Template will be Minted and save as NFT
 
--  Event for Template removed ->
-`pub event TemplateRemoved(templateId: UInt64)`
-Emitted when a Template will be removed
+- Event for Template removed ->
+  `pub event TemplateRemoved(templateId: UInt64)`
+  Emitted when a Template will be removed
 
 ## TroonAtomicStandard Addresses
 

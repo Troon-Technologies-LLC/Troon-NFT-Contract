@@ -1,4 +1,4 @@
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import NonFungibleToken from 0x631e88ae7f1d7c20
 
 pub contract TroonAtomicStandard: NonFungibleToken {
 
@@ -39,6 +39,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
     access(self) var allSchemas: {UInt64: Schema}
     access(self) var allTemplates: {UInt64: Template}
     access(self) var allNFTs: {UInt64: NFTData}
+
     // Accounts ability to add capability
     access(self) var whiteListedAccounts: [Address]
 
@@ -103,7 +104,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
         pub let schemaId: UInt64
         pub var maxSupply: UInt64
         pub var issuedSupply: UInt64
-        pub var immutableData: {String: AnyStruct}
+        access(contract) var immutableData: {String: AnyStruct}
 
         init(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}) {
             pre {
@@ -180,7 +181,13 @@ pub contract TroonAtomicStandard: NonFungibleToken {
                 }
             }
             assert(isValidTemplate, message: "invalid template data. Error: ".concat(invalidKey))
+        }
 
+        // a method to get the immutable data of the template
+        pub fun getImmutableData(): {String:AnyStruct} {
+            return self.immutableData
+        }
+        
         // a method to increment issued supply for template
         access(contract) fun incrementIssuedSupply(): UInt64 {
             pre {
@@ -208,6 +215,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
         access(contract) let data: NFTData
+
         init(templateID: UInt64, mintNumber: UInt64) {
             TroonAtomicStandard.totalSupply = TroonAtomicStandard.totalSupply + 1
             self.id = TroonAtomicStandard.totalSupply
@@ -215,15 +223,17 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             self.data = TroonAtomicStandard.allNFTs[self.id]!
             emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
         }
-        destroy(){
+
+        destroy() {
             emit NFTDestroyed(id: self.id)
         }
     }
+
+
     pub resource interface TroonAtomicStandardCollectionPublic {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-
         pub fun borrowTroonAtomicStandard(id: UInt64): &TroonAtomicStandard.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
@@ -234,7 +244,10 @@ pub contract TroonAtomicStandard: NonFungibleToken {
         }
     }
 
-    pub resource Collection: TroonAtomicStandardCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    // Collection is a resource that every user who owns NFTs 
+    // will store in their account to manage their NFTS
+    //
+    pub resource Collection: TroonAtomicStandardCollectionPublic,NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
@@ -259,9 +272,10 @@ pub contract TroonAtomicStandard: NonFungibleToken {
         }
 
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
-           return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+            return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
-   
+
+         // borrowTroonAtomicStandard returns a borrowed reference to a TroonAtomicStandard
         // so that the caller can read data and call methods from it.
         //
         // Parameters: id: The ID of the NFT to get the reference for
@@ -278,6 +292,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
         init() {
             self.ownedNFTs <- {}
         }
+        
         
         destroy () {
             destroy self.ownedNFTs
@@ -300,9 +315,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
     }
     
     //AdminCapability to add whiteListedAccounts
-   
-    //AdminCapability to add whiteListedAccounts
-     pub resource AdminCapability{        
+    pub resource AdminCapability {
         pub fun addwhiteListedAccount(_user: Address) {
             pre{
                 TroonAtomicStandard.whiteListedAccounts.contains(_user) == false: "user already exist"
@@ -409,18 +422,6 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             self.ownedTemplates[TroonAtomicStandard.lastIssuedTemplateId] = newTemplate
             TroonAtomicStandard.lastIssuedTemplateId = TroonAtomicStandard.lastIssuedTemplateId + 1
         }
-         //method to remove template by id
-        pub fun removeTemplateById(templateId: UInt64): Bool {
-            pre {
-                templateId != nil: "invalid template id"
-                TroonAtomicStandard.allTemplates[templateId]!=nil: "template id does not exist"
-                TroonAtomicStandard.allTemplates[templateId]!.issuedSupply == 0: "could not remove template with given id"   
-            }
-            let mintsData =  TroonAtomicStandard.allTemplates.remove(key: templateId)
-            emit TemplateRemoved(templateId: templateId)
-            return true
-        }
-
         //method to mint NFT, only access by the verified user
         pub fun mintNFT(templateId: UInt64, account: Address) {
             pre{
@@ -434,7 +435,6 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             let receiptAccount = getAccount(account)
             let recipientCollection = receiptAccount
                 .getCapability(TroonAtomicStandard.CollectionPublicPath)
-
                 .borrow<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>()
                 ?? panic("Could not get receiver reference to the NFT Collection")
             var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: TroonAtomicStandard.allTemplates[templateId]!.incrementIssuedSupply())
@@ -452,6 +452,7 @@ pub contract TroonAtomicStandard: NonFungibleToken {
             emit TemplateRemoved(templateId: templateId)
             return true
         }
+
         init() {
             self.ownedBrands = {}
             self.ownedSchemas = {}
@@ -513,11 +514,12 @@ pub contract TroonAtomicStandard: NonFungibleToken {
     pub fun getNFTDataById(nftId: UInt64): NFTData {
         pre {
             TroonAtomicStandard.allNFTs[nftId]!=nil: "nft id does not exist"
+        }
         return TroonAtomicStandard.allNFTs[nftId]!
     }
 
     //Initialize all variables with default values
-    init(){
+    init() {
         self.lastIssuedBrandId = 1
         self.lastIssuedSchemaId = 1
         self.lastIssuedTemplateId = 1
@@ -527,12 +529,14 @@ pub contract TroonAtomicStandard: NonFungibleToken {
         self.allTemplates = {}
         self.allNFTs = {}
         self.whiteListedAccounts = [self.account.address]
+
         self.AdminResourceStoragePath = /storage/TroonAtomicStandardAdminResource
         self.CollectionStoragePath = /storage/TroonAtomicStandardCollection
         self.CollectionPublicPath = /public/TroonAtomicStandardCollection
         self.AdminStorageCapability = /storage/TroonAtomicStandardAdminCapability
         self.AdminCapabilityPrivate = /private/TroonAtomicStandardAdminCapability
         self.NFTMethodsCapabilityPrivatePath = /private/TroonAtomicStandardNFTMethodsCapability
+        
         self.account.save<@AdminCapability>(<- create AdminCapability(), to: /storage/AdminStorageCapability)
         self.account.link<&AdminCapability>(self.AdminCapabilityPrivate, target: /storage/AdminStorageCapability)
         self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
@@ -540,3 +544,4 @@ pub contract TroonAtomicStandard: NonFungibleToken {
 
         emit ContractInitialized()
     }
+}

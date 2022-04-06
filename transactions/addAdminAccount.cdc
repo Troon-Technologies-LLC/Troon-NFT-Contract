@@ -15,7 +15,7 @@ transaction(admin: Address) {
             ?? panic("could not borrow reference to UserSpecialCapability")
 
         //get admin refrence for adding AdminCapability
-         let adminRef = signer.getCapability<&TroonAtomicStandard.AdminCapability>(TroonAtomicStandard.AdminCapabilityPrivate).borrow() 
+        let adminRef = signer.getCapability<&TroonAtomicStandard.AdminCapability>(TroonAtomicStandard.AdminCapabilityPrivate).borrow() 
                         ?? panic("could not get borrow the refrence")
         let userResponse = adminRef.isWhiteListedAccount(_user: admin) 
         if(userResponse == false) {

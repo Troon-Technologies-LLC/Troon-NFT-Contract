@@ -10,7 +10,6 @@ transaction {
         acct.save( <- collection, to:TroonAtomicStandard.CollectionStoragePath)
         log("Collection created for account".concat(acct.address.toString()))
         // create a public capability for the Collection
-
         acct.link<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)        
     }
 }
