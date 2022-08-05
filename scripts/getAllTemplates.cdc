@@ -1,5 +1,5 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
-pub fun main():{UInt64:TroonAtomicStandard.Template}  {
-    return TroonAtomicStandard.getAllTemplates()
+pub fun main():{UInt64:XGStudio.Template}  {
+    return XGStudio.getAllTemplates()
 }

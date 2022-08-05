@@ -1,7 +1,7 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
 
 pub fun main(): UInt64 {
-    return TroonAtomicStandard.totalSupply
+    return XGStudio.totalSupply
 
 }

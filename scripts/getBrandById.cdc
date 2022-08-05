@@ -1,5 +1,5 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
 pub fun main(brandId:UInt64): AnyStruct{
-    return TroonAtomicStandard.getBrandById(brandId: brandId)
+    return XGStudio.getBrandById(brandId: brandId)
 }

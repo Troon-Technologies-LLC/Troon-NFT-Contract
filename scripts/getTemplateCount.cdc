@@ -1,6 +1,6 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
 
 pub fun main() : Int {
-  return  TroonAtomicStandard.getAllTemplates().length
+  return  XGStudio.getAllTemplates().length
 }

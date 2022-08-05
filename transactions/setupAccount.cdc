@@ -1,15 +1,19 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
-
-transaction {
-    prepare(acct: AuthAccount) {
-
-        let collection  <- TroonAtomicStandard.createEmptyCollection()
-        // store the empty NFT Collection in account storage
-        acct.save( <- collection, to:TroonAtomicStandard.CollectionStoragePath)
-        log("Collection created for account".concat(acct.address.toString()))
-        // create a public capability for the Collection
-        acct.link<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>(TroonAtomicStandard.CollectionPublicPath, target:TroonAtomicStandard.CollectionStoragePath)        
+transaction() {
+    prepare(signer: AuthAccount) {
+    
+        if signer.borrow<&XGStudio.Collection>(from:XGStudio.CollectionStoragePath) == nil{
+            let collection  <- XGStudio.createEmptyCollection() as! @XGStudio.Collection
+            // store the empty NFT Collection in account storage
+            signer.save( <- collection, to: XGStudio.CollectionStoragePath)
+            // create a public capability for the Collection
+            signer.link<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath, target:XGStudio.CollectionStoragePath)
+            log("Collection create")
+        }
+        else {
+            log("capability already created")
+        }
+        
     }
 }

@@ -1,11 +1,9 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-
+import XGStudio from "../contracts/XGStudio.cdc"
 
 pub fun main(address: Address) : {UInt64: AnyStruct}{
     let account1 = getAccount(address)
-    let acct1Capability =  account1.getCapability(TroonAtomicStandard.CollectionPublicPath)
-                            .borrow<&{NonFungibleToken.CollectionPublic}>()
+    let acct1Capability =  account1.getCapability(XGStudio.CollectionPublicPath)
+                            .borrow<&{XGStudio.XGStudioCollectionPublic}>()
                             ??panic("could not borrow receiver reference ")
 
     var nftIds =   acct1Capability.getIDs()
@@ -13,8 +11,8 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
     var dict : {UInt64: AnyStruct} = {}
 
     for nftId in nftIds {
-        var nftData = TroonAtomicStandard.getNFTDataById(nftId: nftId)
-        var templateDataById =  TroonAtomicStandard.getTemplateById(templateId: nftData.templateID)
+        var nftData = XGStudio.getNFTDataById(nftId: nftId)
+        var templateDataById =  XGStudio.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
         

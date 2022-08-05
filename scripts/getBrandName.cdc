@@ -1,5 +1,5 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import XGStudio from "../contracts/XGStudio.cdc"
 
-pub fun main(brandId:UInt64): TroonAtomicStandard.Brand {
-    return TroonAtomicStandard.getBrandById(brandId: brandId)
+pub fun main(brandId:UInt64): XGStudio.Brand {
+    return XGStudio.getBrandById(brandId: brandId)
 }

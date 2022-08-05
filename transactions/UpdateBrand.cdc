@@ -1,13 +1,11 @@
-import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-
+import XGStudio from "../contracts/XGStudio.cdc"
 
 transaction (brandId:UInt64,brandName:String){
   prepare(acct: AuthAccount) {
 
     let actorResource = acct.getCapability
-              <&{TroonAtomicStandard.NFTMethodsCapability}>
-              (TroonAtomicStandard.NFTMethodsCapabilityPrivatePath)
+              <&{XGStudio.NFTMethodsCapability}>
+              (XGStudio.NFTMethodsCapabilityPrivatePath)
               .borrow() ?? 
               panic("could not borrow a reference to the NFTMethodsCapability interface")
 
