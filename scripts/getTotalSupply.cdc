@@ -1,7 +1,6 @@
-import XGStudio from "../contracts/XGStudio.cdc"
 
+import ExampleNFT from "../contracts/ExampleNFT.cdc"
 
-pub fun main(): UInt64 {
-    return XGStudio.totalSupply
-
-}
+pub fun main(): UInt64{
+    return  ExampleNFT.totalSupply
+}  

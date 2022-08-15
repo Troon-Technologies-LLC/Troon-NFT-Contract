@@ -1,19 +1,19 @@
-import XGStudio from "../contracts/XGStudio.cdc"
+import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+import MetadataViews from "../contracts/MetadataViews.cdc"
 
-transaction() {
-    prepare(signer: AuthAccount) {
-    
-        if signer.borrow<&XGStudio.Collection>(from:XGStudio.CollectionStoragePath) == nil{
-            let collection  <- XGStudio.createEmptyCollection() as! @XGStudio.Collection
-            // store the empty NFT Collection in account storage
-            signer.save( <- collection, to: XGStudio.CollectionStoragePath)
-            // create a public capability for the Collection
-            signer.link<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath, target:XGStudio.CollectionStoragePath)
-            log("Collection create")
-        }
-        else {
-            log("capability already created")
-        }
+transaction(){
+    prepare(account: AuthAccount){
         
+        if account.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath) !=nil {
+            return 
+        }
+        let collection <- ExampleNFT.createEmptyCollection()
+
+        account.save(<- collection, to: ExampleNFT.CollectionStoragePath)
+
+        account.link<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
+            ExampleNFT.CollectionPublicPath,
+            target: ExampleNFT.CollectionStoragePath)
     }
 }

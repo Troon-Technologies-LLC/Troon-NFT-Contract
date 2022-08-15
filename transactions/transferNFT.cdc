@@ -1,34 +1,44 @@
-import XGStudio from "../contracts/XGStudio.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
+import ExampleNFT from "../contracts/ExampleNFT.cdc"
 
-// This transaction transfers a template to a recipient
-// This transaction is how a  user would transfer an NFT
-// from their account to another account
-// The recipient must have a TroonAtomicStandard Collection object stored
-// and a public TransferInterface capability stored at
-// `/public/TemplateCollection`
+/// This transaction is for transferring and NFT from
+/// one account to another
+transaction(recipient: Address, withdrawID: UInt64) {
 
-// Parameters:
-//
-// recipient: The Flow address of the account to receive the NFT.
-// withdrawID: The id of the NFT to be transferred
+    /// Reference to the withdrawer's collection
+    let withdrawRef: &ExampleNFT.Collection
 
-transaction(recipient:Address, withdrawID:UInt64) {
-    // local variable for storing the transferred token
-    let transferToken: @NonFungibleToken.NFT
-    prepare(acct: AuthAccount) {
-        let collectionRef =  acct.borrow<&XGStudio.Collection>(from: XGStudio.CollectionStoragePath)
-        ??panic("could not borrow a reference to the the stored nft Collection")
-        self.transferToken <- collectionRef.withdraw(withdrawID: withdrawID)
+    /// Reference of the collection to deposit the NFT to
+    let depositRef: &{NonFungibleToken.CollectionPublic}
+
+    prepare(signer: AuthAccount) {
+        // borrow a reference to the signer's NFT collection
+        self.withdrawRef = signer
+            .borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+            ?? panic("Account does not store an object at the specified path")
+
+        // get the recipients public account object
+        let recipient = getAccount(recipient)
+
+        // borrow a public reference to the receivers collection
+        self.depositRef = recipient
+            .getCapability(ExampleNFT.CollectionPublicPath)
+            .borrow<&{NonFungibleToken.CollectionPublic}>()
+            ?? panic("Could not borrow a reference to the receiver's collection")
+
     }
 
     execute {
-        // get the recipient's public account object
-        let recipient = getAccount(recipient)
-        let receiverRef = recipient.getCapability<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath)
-            .borrow()
-            ?? panic("Could not borrow receiver reference")
-        // deposit the NFT in the receivers collection
-        receiverRef.deposit(token: <-self.transferToken)
+
+        // withdraw the NFT from the owner's collection
+        let nft <- self.withdrawRef.withdraw(withdrawID: withdrawID)
+
+        // Deposit the NFT in the recipient's collection
+        self.depositRef.deposit(token: <-nft)
+    }
+
+    post {
+        !self.withdrawRef.getIDs().contains(withdrawID): "Original owner should not have the NFT anymore"
+        self.depositRef.getIDs().contains(withdrawID): "The reciever should now own the NFT"
     }
 }

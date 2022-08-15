@@ -1,29 +1,22 @@
-import XGStudio from "../contracts/XGStudio.cdc"
+import ExampleNFT from "../contracts/ExampleNFT.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
-// This transaction transfers a template to a recipient
-// This transaction is how a  user would transfer an NFT
-// from their account to another account
-// The recipient must have a TroonAtomicStandard Collection object stored
-// and a public TransferInterface capability stored at
-// `/public/TemplateCollection`
 
-// Parameters:
-//
-// recipient: The Flow address of the account to receive the NFT.
-// withdrawID: The id of the NFT to be transferred
+transaction(id: UInt64) {
+    let collectionRef : &ExampleNFT.Collection
 
-transaction(withdrawID:UInt64) {
-    // local variable for storing the transferred token
-    let transferToken: @NonFungibleToken.NFT
-    prepare(acct: AuthAccount) {
-        let collectionRef =  acct.borrow<&XGStudio.Collection>(from: XGStudio.CollectionStoragePath)
-        ??panic("could not borrow a reference to the the stored nft Collection")
-        self.transferToken <- collectionRef.withdraw(withdrawID: withdrawID)
+    prepare(account: AuthAccount){
+
+        self.collectionRef = account.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+                            ??panic("could not borrow collection reference")
     }
-
     execute {
-        
-        destroy self.transferToken
+    
+        let nft <- self.collectionRef.withdraw(withdrawID: id)
+        destroy nft
     }
+    post{
+        !self.collectionRef.getIDs().contains(id): "The nft with the specific id should have been del"
+    }
+
 }
