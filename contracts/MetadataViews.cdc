@@ -1,5 +1,5 @@
-import FungibleToken from "./FungibleToken.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
+import FungibleToken from 0xee82856bf20e2aa6
+import NonFungibleToken from 0x01cf0e2f2f715450
 
 
 

@@ -1,6 +1,6 @@
 
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 
 pub fun main(): UInt64{
-    return  ExampleNFT.totalSupply
+    return  NFTContract.totalSupply
 }  

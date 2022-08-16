@@ -1,6 +1,6 @@
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 import FungibleToken from "../contracts/FungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 import MetadataViews from "../contracts/MetadataViews.cdc"
 transaction(
     address: Address,
@@ -9,7 +9,7 @@ transaction(
     {
     prepare(account:AuthAccount){
         let collection = getAccount(address)
-                        .getCapability(ExampleNFT.CollectionPublicPath)
+                        .getCapability(NFTContract.CollectionPublicPath)
                         .borrow<&{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>()
                         ??panic("could not borrow reference to collection")
         let resolver = collection.borrowViewResolver(id: id)!
@@ -20,7 +20,7 @@ transaction(
         account.save(<- emptyCollection, to: nftCollectionView.storagePath)
 
         // create a public capability for the collection
-        account.link<&{NonFungibleToken.CollectionPublic, ExampleNFT.ExampleNFTCollectionPublic, MetadataViews.ResolverCollection}>(
+        account.link<&{NonFungibleToken.CollectionPublic, NFTContract.NFTContractCollectionPublic, MetadataViews.ResolverCollection}>(
             nftCollectionView.publicPath,
             target: nftCollectionView.storagePath
         )

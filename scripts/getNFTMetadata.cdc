@@ -1,5 +1,5 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import MetadataViews from 0x01cf0e2f2f715450
+import NFTContract from 0x179b6b1cb6755e31
 
 /// This script gets all the view-based metadata associated with the specified NFT
 /// and returns it as a single struct
@@ -25,7 +25,6 @@ pub struct NFT {
     pub let collectionBannerImage: String
     pub let collectionSocials: {String: String}
     pub let edition: MetadataViews.Edition
-    pub let traits: MetadataViews.Traits
 		pub let medias: MetadataViews.Medias?
 		pub let license: MetadataViews.License?
 
@@ -51,7 +50,6 @@ pub struct NFT {
         collectionBannerImage: String,
         collectionSocials: {String: String},
         edition: MetadataViews.Edition,
-        traits: MetadataViews.Traits,
 				medias:MetadataViews.Medias?,
 				license:MetadataViews.License?
     ) {
@@ -76,7 +74,6 @@ pub struct NFT {
         self.collectionBannerImage = collectionBannerImage
         self.collectionSocials = collectionSocials
         self.edition = edition
-        self.traits = traits
 				self.medias=medias
 				self.license=license
     }
@@ -86,11 +83,11 @@ pub fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
 
     let collection = account
-        .getCapability(ExampleNFT.CollectionPublicPath)
-        .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
+        .getCapability(NFTContract.CollectionPublicPath)
+        .borrow<&{NFTContract.NFTContractCollectionPublic}>()
         ?? panic("Could not borrow a reference to the collection")
 
-    let nft = collection.borrowExampleNFT(id: id)!
+    let nft = collection.borrowNFTContract_NFT(id: id)!
 
     // Get the basic display information for this NFT
     let display = MetadataViews.getDisplay(nft)!
@@ -113,8 +110,6 @@ pub fun main(address: Address, id: UInt64): NFT {
     for key in collectionDisplay.socials.keys {
         collectionSocials[key] = collectionDisplay.socials[key]!.url
     }
-
-		let traits = MetadataViews.getTraits(nft)!
 
 		let medias=MetadataViews.getMedias(nft)
 		let license=MetadataViews.getLicense(nft)
@@ -141,7 +136,6 @@ pub fun main(address: Address, id: UInt64): NFT {
         collectionBannerImage: collectionDisplay.bannerImage.file.uri(),
         collectionSocials: collectionSocials,
         edition: nftEditionView.infoList[0],
-        traits: traits,
 				medias:medias,
 				license:license
     )

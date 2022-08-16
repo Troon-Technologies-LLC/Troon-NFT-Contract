@@ -1,13 +1,13 @@
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 
 transaction(id: UInt64) {
-    let collectionRef : &ExampleNFT.Collection
+    let collectionRef : &NFTContract.Collection
 
     prepare(account: AuthAccount){
 
-        self.collectionRef = account.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+        self.collectionRef = account.borrow<&NFTContract.Collection>(from: NFTContract.CollectionStoragePath)
                             ??panic("could not borrow collection reference")
     }
     execute {

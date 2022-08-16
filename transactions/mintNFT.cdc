@@ -1,55 +1,26 @@
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
-import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import FungibleToken from "../contracts/FungibleToken.cdc"
+import NFTContract from 0x179b6b1cb6755e31
+import NonFungibleToken from 0x01cf0e2f2f715450
+import MetadataViews from 0x01cf0e2f2f715450
+import FungibleToken from 0xee82856bf20e2aa6
 
-
-transaction(
-    let receiptAccount : Address
-    )
-    {
-    let minterRef : &ExampleNFT.NFTMinter
-    let reciverRef: &{NonFungibleToken.CollectionPublic}
-    let mintingIdBefore: UInt64
+transaction(templateId: UInt64, reciptAddress: Address){
     prepare(account: AuthAccount){
-        self.mintingIdBefore = ExampleNFT.totalSupply
-        self.minterRef = account.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
-                        ??panic("could not borrow admin reference")
-
-        self.reciverRef = getAccount(receiptAccount).getCapability(ExampleNFT.CollectionPublicPath)
-                        .borrow<&{NonFungibleToken.CollectionPublic}>()
-                        ??panic("could not borrow receiver reference")
-
-    }
-    pre{
-        [0.09].length == ["go to account 4"].length && [0.09].length == [0x04].length: "Array length should be equal for royalty related details"
-    }
-    execute{
-        var count = 0
+        let actorResource = account.getCapability
+                                        <&{NFTContract.NFTMethodsCapability}>
+                                        (NFTContract.NFTMethodsCapabilityPrivatePath)
+                                        .borrow() ?? 
+                                        panic("could not borrow a reference to the NFTMethodsCapability interface")
+            let immutableData : {String: AnyStruct} = {
+                "name" : "Nasir"  
+        }
         var royalties: [MetadataViews.Royalty] = []
-        while [0x04].length > count {
-        let benificary = [0x04][count]
-        let benificaryCapability = getAccount(0x04)
-                                .getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath())
-
-        if !benificaryCapability.check(){
-            panic("benificary capability is not valid")
-        }
-        royalties.append(
-            MetadataViews.Royalty(
-                receiver: benificaryCapability,
-                cut: [0.09][count],
-                description: ["go to account4"][count]
-            )
-        )
-        count = count + 1
-        }
-        self.minterRef.mintNFT(recipient: self.reciverRef, name: "First nft", description: "First ever nft", thumbnail: "nasir.com", royalties: royalties)
-        log("NFT min")
-    }
-    post{
-        self.reciverRef.getIDs().contains(self.mintingIdBefore): "The next NFT ID should have been minted and delivered"
-        ExampleNFT.totalSupply == self.mintingIdBefore + 1: "The total supply should have been increased by 1"
-
+        actorResource.mintNFT( 
+            templateId: templateId,
+            account: reciptAddress,
+            immutableData:immutableData,
+            name: "Imsa",
+            description: "Imsa is a fastlane",
+            thumbnail: "www.google.com",
+            royalties: royalties)
     }
 }

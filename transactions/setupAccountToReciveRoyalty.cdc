@@ -1,6 +1,6 @@
 import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 import FungibleToken from "../contracts/FungibleToken.cdc"
-import ExampleNFT from "../contracts/ExampleNFT.cdc"
+import NFTContract from "../contracts/NFTContract.cdc"
 import MetadataViews from "../contracts/MetadataViews.cdc"
 
 transaction(vaultPath: StoragePath){
