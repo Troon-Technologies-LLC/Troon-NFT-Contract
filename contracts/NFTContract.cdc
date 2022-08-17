@@ -7,12 +7,14 @@ pub contract NFTContract: NonFungibleToken {
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
     pub event NFTDestroyed(id: UInt64)
-    pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64)
+    pub event CollectionDestroyed(owner: Address?)
     pub event BrandCreated(brandId: UInt64, brandName: String, author: Address, data:{String: String})
     pub event BrandUpdated(brandId: UInt64, brandName: String, author: Address, data:{String: String})
     pub event TemplateCreated(templateId: UInt64, brandId: UInt64, maxSupply: UInt64)
     pub event TemplateRemoved(templateId: UInt64)
     pub event TemplateUpdated(templateId: UInt64)
+    pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64, name: String, description: String, thumbnail: String)
+    
 
     // Paths
     pub let AdminResourceStoragePath: StoragePath
@@ -34,7 +36,7 @@ pub contract NFTContract: NonFungibleToken {
     // A dictionary that stores all Brands against it's brand-id.
     access(self) var allBrands: {UInt64: Brand}
     access(self) var allTemplates: {UInt64: Template}
-    access(self) var allNFTs: {UInt64: NFTData}
+    access(self) var allNFTs: {UInt64: NFTDataView}
 
     // Accounts ability to add capability
     access(self) var whiteListedAccounts: [Address]
@@ -47,7 +49,7 @@ pub contract NFTContract: NonFungibleToken {
         pub let brandName: String
         pub let author: Address
         access(contract) var data: {String: String}
-        
+        access(contract) var templates: [UInt64]
         init(brandName: String, author: Address, data: {String: String}) {
             pre {
                 brandName.length > 0: "Brand name is required";
@@ -58,10 +60,22 @@ pub contract NFTContract: NonFungibleToken {
             self.brandName = brandName
             self.author = author
             self.data = data
+            self.templates = []
         }
         pub fun update(data: {String: String}) {
             self.data = data
         }
+        access(contract) fun appendTemplateId(newTemplateId: UInt64){
+            pre {
+                newTemplateId != 0: "template id must not be zero"
+            }
+            self.templates.append(newTemplateId)
+        }
+
+        pub fun getTemplates():[UInt64]{
+            return self.templates
+        }
+
     }
 
     // A structure that contain all the data and methods related to Template
@@ -71,6 +85,7 @@ pub contract NFTContract: NonFungibleToken {
         pub var maxSupply: UInt64
         pub var issuedSupply: UInt64
         pub var locked: Bool
+        pub var nfts: [UInt64]
         access(contract) var immutableData: {String: AnyStruct}
         access(contract) var mutableData: {String: AnyStruct}?
         init(brandId: UInt64,  maxSupply: UInt64, immutableData: {String: AnyStruct}, mutableData: {String: AnyStruct}?) {
@@ -83,18 +98,30 @@ pub contract NFTContract: NonFungibleToken {
             self.templateId = NFTContract.lastIssuedTemplateId
             self.brandId = brandId
             self.maxSupply = maxSupply
+            self.nfts = []
             self.immutableData = immutableData
             self.mutableData = mutableData
             self.issuedSupply = 0
             self.locked = false
         }
+        // a method to add new NFT's id to a specific template
+        access(contract) fun appendNFTId(newNFTId: UInt64){
+            pre {
+                newNFTId != 0: "NFT id must not be zero"
+            }
+            self.nfts.append(newNFTId)
+        }
+        pub fun getNFTIds():[UInt64]{
+            return self.nfts
+        }
+
         // a method to update entire MutableData field of Template
-        pub fun updateMutableData(mutableData: {String: AnyStruct}) {     
+        access(contract) fun updateMutableData(mutableData: {String: AnyStruct}) {     
                 self.mutableData = mutableData
         }
 
         // a method to update or add particular pair in MutableData field of Template
-        pub fun updateMutableAttribute(key: String, value: AnyStruct){
+        access(contract) fun updateMutableAttribute(key: String, value: AnyStruct){
             pre{
                 self.mutableData != nil: "Mutable data is nil, update complete mutable data of template instead!"
                 key != "": "Can't update invalid key"
@@ -124,24 +151,41 @@ pub contract NFTContract: NonFungibleToken {
         pub fun lockTemplate(){
             if !self.locked {
                 self.locked= true
+                self.maxSupply = self.issuedSupply
             }
         }
     }
 
     // A structure that link template and mint-no of NFT
-    pub struct NFTData {
-        pub let templateID: UInt64
+    pub struct NFTDataView {
+        pub let templateId: UInt64
         pub let mintNumber: UInt64
+        pub let name: String
+        pub let description: String
+        pub let thumbnail: String
         access(contract) var immutableData: {String: AnyStruct}?
+        access(contract) var mutableData: {String:AnyStruct}?
 
-        init(templateID: UInt64, mintNumber: UInt64, immutableData: {String: AnyStruct}?) {
-            self.templateID = templateID
+        init(templateId: UInt64, mintNumber: UInt64, name: String, description: String, thumbnail: String,  immutableData: {String: AnyStruct}?, mutableData:{String:AnyStruct}?) {
+            self.templateId = templateId
             self.mintNumber = mintNumber
+            self.name = name
+            self.description = description
+            self.thumbnail = thumbnail
             self.immutableData = immutableData
+            self.mutableData = mutableData
         }
+        // a method to update entire MutableData field of NFTDataView
+        access(contract) fun updateMutableData(mutableData: {String: AnyStruct}) {     
+                self.mutableData = mutableData
+        }
+
         // a method to get the immutable data of the NFT
         pub fun getImmutableData(): {String:AnyStruct}? {
             return self.immutableData
+        }
+        pub fun getMutableData():{String:AnyStruct}?  {
+            return  self.mutableData
         }
     }
 
@@ -153,28 +197,25 @@ pub contract NFTContract: NonFungibleToken {
         pub let description: String
         pub let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
-        access(self) let metadata: {String: AnyStruct}
-        access(contract) let data: NFTData
-
+        access(contract) let data: NFTDataView
         init(
-            templateID: UInt64,
+            templateId: UInt64,
             mintNumber: UInt64,
             immutableData: {String:AnyStruct}?,
             name: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty],
-            metadata: {String: AnyStruct},) {
+            royalties: [MetadataViews.Royalty]
+            ) {
             NFTContract.totalSupply = NFTContract.totalSupply + 1
             self.id = NFTContract.totalSupply
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
             self.royalties = royalties
-            self.metadata = metadata
-            NFTContract.allNFTs[self.id] = NFTData(templateID: templateID, mintNumber: mintNumber, immutableData: immutableData)
+            NFTContract.allNFTs[self.id] = NFTDataView(templateId: templateId, mintNumber: mintNumber,  name: name, description: description, thumbnail: thumbnail, immutableData: immutableData, mutableData:nil)
             self.data = NFTContract.allNFTs[self.id]!
-            emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
+            emit NFTMinted(nftId: self.id, templateId: templateId, mintNumber: mintNumber, name: name, description: description, thumbnail:thumbnail)
         }
         
         pub fun getViews(): [Type] {
@@ -250,16 +291,16 @@ pub contract NFTContract: NonFungibleToken {
                 case Type<MetadataViews.Traits>():
                     // exclude mintedTime and foo to show other uses of Traits
                     let excludedTraits = ["mintedTime", "foo"]
-                    let traitsView = MetadataViews.dictToTraits(dict: self.metadata, excludedNames: excludedTraits)
+                    let traitsView = MetadataViews.dictToTraits(dict: self.data, excludedNames: excludedTraits)
 
                     // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
-                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
-                    traitsView.addTrait(mintedTimeTrait)
+                    // let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
+                    // traitsView.addTrait(mintedTimeTrait)
 
-                    // foo is a trait with its own rarity
-                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
-                    let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
-                    traitsView.addTrait(fooTrait)
+                    // // foo is a trait with its own rarity
+                    // let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
+                    // let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
+                    // traitsView.addTrait(fooTrait)
                     
                     return traitsView
 
@@ -343,17 +384,32 @@ pub contract NFTContract: NonFungibleToken {
         
         destroy () {
             destroy self.ownedNFTs
+            emit CollectionDestroyed(owner: self.owner!.address)
+        }
+    }
+
+    pub resource Admin { 
+        //method to create new Brand, only access by the verified user
+        pub fun createNewBrand(brandName: String, data: {String: String}) {
+            pre {
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+            }
+            let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
+            NFTContract.allBrands[NFTContract.lastIssuedBrandId] = newBrand
+            emit BrandCreated(brandId: NFTContract.lastIssuedBrandId ,brandName: brandName, author: self.owner?.address!, data: data)
+            // self.ownedBrands[NFTContract.lastIssuedBrandId] = newBrand 
+            NFTContract.lastIssuedBrandId = NFTContract.lastIssuedBrandId + 1
         }
     }
 
 
     // Interface, which contains all the methods that are called by any user to mint NFT and manage brand, and template funtionality
-    pub resource interface NFTMethodsCapability {
-        pub fun createNewBrand(brandName: String, data: {String: String})
+    pub resource interface NFTMethodsCapability {   
         pub fun updateBrandData(brandId: UInt64, data: {String: String})
         pub fun createTemplate(brandId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}, mutableData: {String: AnyStruct}?)
         pub fun updateTemplateMutableData(templateId: UInt64, mutableData: {String: AnyStruct})
         pub fun updateTemplateMutableAttribute(templateId: UInt64, key: String, value: AnyStruct)
+        pub fun removeTemplateById(templateId: UInt64): Bool
         pub fun mintNFT(
             templateId: UInt64,
             account: Address,
@@ -362,7 +418,6 @@ pub contract NFTContract: NonFungibleToken {
             description: String,
             thumbnail: String,
             royalties: [MetadataViews.Royalty])
-        pub fun removeTemplateById(templateId: UInt64): Bool
     }
     
     //AdminCapability to add whiteListedAccounts
@@ -390,18 +445,6 @@ pub contract NFTContract: NonFungibleToken {
         // a variable that store user capability to utilize methods 
         access(contract) var capability: Capability<&{NFTMethodsCapability}>?
 
-        //method to create new Brand, only access by the verified user
-        pub fun createNewBrand(brandName: String, data: {String: String}) {
-            pre {
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
-            }
-            
-            let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
-            NFTContract.allBrands[NFTContract.lastIssuedBrandId] = newBrand
-            emit BrandCreated(brandId: NFTContract.lastIssuedBrandId ,brandName: brandName, author: self.owner?.address!, data: data)
-            self.ownedBrands[NFTContract.lastIssuedBrandId] = newBrand 
-            NFTContract.lastIssuedBrandId = NFTContract.lastIssuedBrandId + 1
-        }
 
         //method to update the existing Brand, only author of brand can update this brand
         pub fun updateBrandData(brandId: UInt64, data: {String: String}) {
@@ -431,6 +474,7 @@ pub contract NFTContract: NonFungibleToken {
             emit TemplateCreated(templateId: NFTContract.lastIssuedTemplateId, brandId: brandId, maxSupply: maxSupply)
             self.ownedTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
             NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
+            NFTContract.allBrands[brandId]!.appendTemplateId(newTemplateId: NFTContract.lastIssuedTemplateId)
         }
           //method to update the existing template's mutable data, only author of brand can update this template
         pub fun updateTemplateMutableData(templateId: UInt64, mutableData: {String: AnyStruct}) {
@@ -463,6 +507,18 @@ pub contract NFTContract: NonFungibleToken {
             NFTContract.allTemplates[templateId]!.updateMutableAttribute(key: key, value: value)
             emit TemplateUpdated(templateId: templateId)
         }
+        //method to remove template by id
+        pub fun removeTemplateById(templateId: UInt64): Bool {
+            pre {
+                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                templateId != nil: "invalid template id"
+                NFTContract.allTemplates[templateId]!=nil: "template id does not exist"
+                NFTContract.allTemplates[templateId]!.issuedSupply == 0: "could not remove template with given id"   
+            }
+            let mintsData =  NFTContract.allTemplates.remove(key: templateId)
+            emit TemplateRemoved(templateId: templateId)
+            return true
+        }
         //method to mint NFT, only access by the verified user
         pub fun mintNFT(
             templateId: UInt64,
@@ -482,30 +538,16 @@ pub contract NFTContract: NonFungibleToken {
                 .getCapability(NFTContract.CollectionPublicPath)
                 .borrow<&{NFTContract.NFTContractCollectionPublic}>()
                 ?? panic("Could not get receiver reference to the NFT Collection")
-            let metadata : {String: AnyStruct} = {}
             var newNFT: @NFT <- create NFT(
-                templateID: templateId,
+                templateId: templateId,
                 mintNumber: NFTContract.allTemplates[templateId]!.incrementIssuedSupply(),
                 immutableData:immutableData,
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
-                royalties: royalties,
-                metadata: metadata)
+                royalties: royalties)
             recipientCollection.deposit(token: <-newNFT)
-        }
-
-          //method to remove template by id
-        pub fun removeTemplateById(templateId: UInt64): Bool {
-            pre {
-                NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
-                templateId != nil: "invalid template id"
-                NFTContract.allTemplates[templateId]!=nil: "template id does not exist"
-                NFTContract.allTemplates[templateId]!.issuedSupply == 0: "could not remove template with given id"   
-            }
-            let mintsData =  NFTContract.allTemplates.remove(key: templateId)
-            emit TemplateRemoved(templateId: templateId)
-            return true
+            NFTContract.allTemplates[templateId]!.appendNFTId(newNFTId: templateId)
         }
 
         init() {
@@ -547,7 +589,7 @@ pub contract NFTContract: NonFungibleToken {
     } 
 
     //method to get nft-data by id
-    pub fun getNFTDataById(nftId: UInt64): NFTData {
+    pub fun getNFTDataById(nftId: UInt64): NFTDataView {
         pre {
             NFTContract.allNFTs[nftId]!=nil: "nft id does not exist"
         }
