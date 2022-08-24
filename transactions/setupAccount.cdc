@@ -1,7 +1,6 @@
-import NFTContract from 0x179b6b1cb6755e31
-import NonFungibleToken from 0x01cf0e2f2f715450
-import MetadataViews from 0x01cf0e2f2f715450
-
+import MetadataViews from 0x631e88ae7f1d7c20
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import NFTContract from 0xeb1e6c075991c1a7
 transaction(){
     prepare(account: AuthAccount){
         

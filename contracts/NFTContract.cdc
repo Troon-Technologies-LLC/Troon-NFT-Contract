@@ -1,5 +1,8 @@
-import NonFungibleToken from 0x01cf0e2f2f715450
-import MetadataViews from 0x01cf0e2f2f715450
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import MetadataViews from 0x631e88ae7f1d7c20
+import FlowToken from 0x7e60df042a9c0868
+import FungibleToken from 0x9a0766d93b6608b7
+import DapperUtilityCoin from 0x82ec283f88a62e65
 pub contract NFTContract: NonFungibleToken {
 
     // Events
@@ -14,7 +17,7 @@ pub contract NFTContract: NonFungibleToken {
     pub event TemplateRemoved(templateId: UInt64)
     pub event TemplateUpdated(templateId: UInt64)
     pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64, name: String, description: String, thumbnail: String)
-    
+    pub event NFTPurchased(templateId: UInt64, name: String, description: String, thumbnail: String)
 
     // Paths
     pub let AdminResourceStoragePath: StoragePath
@@ -40,6 +43,10 @@ pub contract NFTContract: NonFungibleToken {
 
     // Accounts ability to add capability
     access(self) var whiteListedAccounts: [Address]
+
+    access(self) var contractAddress: Address
+    
+    access(contract) let adminRef : Capability<&{NFTContract.NFTMethodsCapability}>
 
 
 
@@ -291,16 +298,16 @@ pub contract NFTContract: NonFungibleToken {
                 case Type<MetadataViews.Traits>():
                     // exclude mintedTime and foo to show other uses of Traits
                     let excludedTraits = ["mintedTime", "foo"]
-                    let traitsView = MetadataViews.dictToTraits(dict: self.data, excludedNames: excludedTraits)
+                    let traitsView = MetadataViews.dictToTraits(dict: self.data.immutableData!, excludedNames: excludedTraits)
 
                     // mintedTime is a unix timestamp, we should mark it with a displayType so platforms know how to show it.
-                    // let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.metadata["mintedTime"]!, displayType: "Date", rarity: nil)
-                    // traitsView.addTrait(mintedTimeTrait)
+                    let mintedTimeTrait = MetadataViews.Trait(name: "mintedTime", value: self.data.immutableData!["mintedTime"]!, displayType: "Date", rarity: nil)
+                    traitsView.addTrait(mintedTimeTrait)
 
                     // // foo is a trait with its own rarity
-                    // let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
-                    // let fooTrait = MetadataViews.Trait(name: "foo", value: self.metadata["foo"], displayType: nil, rarity: fooTraitRarity)
-                    // traitsView.addTrait(fooTrait)
+                    let fooTraitRarity = MetadataViews.Rarity(score: 10.0, max: 100.0, description: "Common")
+                    let fooTrait = MetadataViews.Trait(name: "foo", value: self.data.immutableData!["foo"], displayType: nil, rarity: fooTraitRarity)
+                    traitsView.addTrait(fooTrait)
                     
                     return traitsView
 
@@ -311,6 +318,7 @@ pub contract NFTContract: NonFungibleToken {
             emit NFTDestroyed(id: self.id)
         }
     }
+
 
 
     pub resource interface NFTContractCollectionPublic {
@@ -388,7 +396,7 @@ pub contract NFTContract: NonFungibleToken {
         }
     }
 
-    pub resource Admin { 
+    pub resource BrandAdmin { 
         //method to create new Brand, only access by the verified user
         pub fun createNewBrand(brandName: String, data: {String: String}) {
             pre {
@@ -420,6 +428,7 @@ pub contract NFTContract: NonFungibleToken {
             royalties: [MetadataViews.Royalty])
     }
     
+
     //AdminCapability to add whiteListedAccounts
     pub resource AdminCapability {
         pub fun addwhiteListedAccount(_user: Address) {
@@ -466,15 +475,16 @@ pub contract NFTContract: NonFungibleToken {
         pub fun createTemplate(brandId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}, mutableData:{String: AnyStruct}?) {
             pre { 
                 NFTContract.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
-                self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
+                // self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
+                NFTContract.allBrands[brandId] != nil: "brand Id does not exists"
                 }
 
             let newTemplate = Template(brandId: brandId,  maxSupply: maxSupply, immutableData: immutableData, mutableData: mutableData)
             NFTContract.allTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
             emit TemplateCreated(templateId: NFTContract.lastIssuedTemplateId, brandId: brandId, maxSupply: maxSupply)
             self.ownedTemplates[NFTContract.lastIssuedTemplateId] = newTemplate
-            NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
             NFTContract.allBrands[brandId]!.appendTemplateId(newTemplateId: NFTContract.lastIssuedTemplateId)
+            NFTContract.lastIssuedTemplateId = NFTContract.lastIssuedTemplateId + 1
         }
           //method to update the existing template's mutable data, only author of brand can update this template
         pub fun updateTemplateMutableData(templateId: UInt64, mutableData: {String: AnyStruct}) {
@@ -549,13 +559,49 @@ pub contract NFTContract: NonFungibleToken {
             recipientCollection.deposit(token: <-newNFT)
             NFTContract.allTemplates[templateId]!.appendNFTId(newNFTId: templateId)
         }
-
         init() {
             self.ownedBrands = {}
             self.ownedTemplates = {}
             self.capability = nil
         }
     }
+    pub fun purchaseNFT(templateId: UInt64,
+            account: Address,
+            immutableData:{String:AnyStruct}?,
+            name: String,
+            description: String,
+            thumbnail: String,
+            royalties: [MetadataViews.Royalty],
+            payment: @FungibleToken.Vault,
+            price: UFix64){
+            pre{
+                templateId!=0:"template id must not be zero"
+                account != nil:"account address must not be null"
+                name.length>0 :"name must be valid"
+                description.length>0 :"description must be valid"
+                thumbnail.length>0 :"thumbnail must be valid"              
+                payment.balance > 0.0 :"payment must be greater than zero"
+                price > 0.0: "price must be greater than zero"
+                payment.balance == price : "Your vault does not have balance to buy NFT"
+                NFTContract.allTemplates[templateId] != nil: "Template Id must be valid"
+            }
+            let receiptAccount = getAccount(NFTContract.contractAddress)
+            let recipientCollection = receiptAccount
+                 .getCapability(/public/dapperUtilityCoinReceiver)
+                .borrow<&DapperUtilityCoin.Vault{FungibleToken.Receiver}>()
+                ?? panic("Could not get receiver reference to the flow receiver")
+            recipientCollection.deposit(from: <- payment)
+            NFTContract.adminRef.borrow()!.mintNFT( templateId: templateId,
+                account: account,            
+                immutableData:immutableData,
+                name: name,
+                description: description,
+                thumbnail: thumbnail,
+                royalties: royalties)
+
+                emit NFTPurchased( templateId: templateId, name: name, description: description, thumbnail: thumbnail)
+        }
+
     
     //method to create empty Collection
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
@@ -595,6 +641,9 @@ pub contract NFTContract: NonFungibleToken {
         }
         return NFTContract.allNFTs[nftId]!
     }
+    pub fun getAllNFTs():{UInt64:NFTDataView}{
+        return NFTContract.allNFTs
+    }
 
     //Initialize all variables with default values
     init() {
@@ -605,6 +654,8 @@ pub contract NFTContract: NonFungibleToken {
         self.allTemplates = {}
         self.allNFTs = {}
         self.whiteListedAccounts = [self.account.address]
+        self.contractAddress = self.account!.address
+        
 
         self.AdminResourceStoragePath = /storage/NFTContractAdminResource
         self.CollectionStoragePath = /storage/NFTContractCollection
@@ -612,12 +663,12 @@ pub contract NFTContract: NonFungibleToken {
         self.AdminStorageCapability = /storage/NFTContractAdminCapability
         self.AdminCapabilityPrivate = /private/NFTContractAdminCapability
         self.NFTMethodsCapabilityPrivatePath = /private/NFTContractNFTMethodsCapability
-        
+        self.adminRef = self.account.getCapability<&{NFTContract.NFTMethodsCapability}>(NFTContract.NFTMethodsCapabilityPrivatePath) 
         self.account.save<@AdminCapability>(<- create AdminCapability(), to: /storage/AdminStorageCapability)
         self.account.link<&AdminCapability>(self.AdminCapabilityPrivate, target: /storage/AdminStorageCapability)
         self.account.save<@AdminResource>(<- create AdminResource(), to: self.AdminResourceStoragePath)
         self.account.link<&{NFTMethodsCapability}>(self.NFTMethodsCapabilityPrivatePath, target: self.AdminResourceStoragePath)
-
+        self.account.save(<- create BrandAdmin(), to: /storage/BrandAdmin)
         emit ContractInitialized()
     }
 }

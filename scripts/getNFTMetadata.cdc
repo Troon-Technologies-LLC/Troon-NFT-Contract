@@ -1,5 +1,6 @@
-import MetadataViews from 0x01cf0e2f2f715450
-import NFTContract from 0x179b6b1cb6755e31
+import MetadataViews from 0x631e88ae7f1d7c20
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import NFTContract from 0xeb1e6c075991c1a7
 
 /// This script gets all the view-based metadata associated with the specified NFT
 /// and returns it as a single struct

@@ -1,4 +1,4 @@
-import NFTContract from 0x179b6b1cb6755e31
+import NFTContract from 0xeb1e6c075991c1a7
 transaction(brandId:UInt64, maxSupply:UInt64) {
     prepare(acct: AuthAccount) {
 

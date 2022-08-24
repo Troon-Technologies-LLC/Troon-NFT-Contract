@@ -1,4 +1,4 @@
-import NFTContract from 0x179b6b1cb6755e31
+import NFTContract from 0xeb1e6c075991c1a7
 // Print the NFTs owned by accounts 0x01 and 0x02.
 pub fun main(address: Address) : [UInt64] {
 
