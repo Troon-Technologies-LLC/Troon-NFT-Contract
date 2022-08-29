@@ -1,7 +1,7 @@
 import MetadataViews from 0x631e88ae7f1d7c20
-import FlowToken from 0x7e60df042a9c0868
 import FungibleToken from 0x9a0766d93b6608b7
 import NFTContract from 0xeb1e6c075991c1a7
+import DapperUtilityCoin from 0x82ec283f88a62e65
 
 transaction(templateId: UInt64, reciptAddress: Address, price: UFix64){
 
@@ -9,7 +9,7 @@ transaction(templateId: UInt64, reciptAddress: Address, price: UFix64){
     
     prepare(account:AuthAccount){
 
-        let vaultRef = account.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
+        let vaultRef = account.borrow<&DapperUtilityCoin.Vault>(from:  /storage/dapperUtilityCoinVault)
                                     ??panic("could not borrow vault ref")
 
         self.temporaryVault <- vaultRef.withdraw(amount: price)

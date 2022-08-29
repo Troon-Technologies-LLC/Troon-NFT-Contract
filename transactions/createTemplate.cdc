@@ -1,4 +1,4 @@
-import NFTContract from 0xeb1e6c075991c1a7
+import NFTContract from "../contracts/NFTContract.cdc"
 transaction(brandId:UInt64, maxSupply:UInt64) {
     prepare(acct: AuthAccount) {
 

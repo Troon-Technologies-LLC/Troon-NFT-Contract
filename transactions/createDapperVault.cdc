@@ -8,13 +8,14 @@ transaction(){
         if account.borrow<&DapperUtilityCoin.Vault>(from: /storage/dapperUtilityCoinVault) == nil{
             account.save(<-DapperUtilityCoin.createEmptyVault(), to:/storage/dapperUtilityCoinVault)
             account.link<&DapperUtilityCoin.Vault{FungibleToken.Receiver}>(
-                /storage/dapperUtilityCoinVault,
-                target:/public/dapperUtilityCoinReceiver)
+                /public/dapperUtilityCoinBalance,
+                target: /storage/dapperUtilityCoinVault)
 
             account.link<&DapperUtilityCoin.Vault{FungibleToken.Balance}>(
-                /storage/dapperUtilityCoinVault,
-                target:/public/dapperUtilityCoinBalance)
+                /public/dapperUtilityCoinBalance,
+                target: /storage/dapperUtilityCoinVault)
         }
 
     }
 }
+ 
