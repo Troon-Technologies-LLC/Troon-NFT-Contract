@@ -1,5 +1,6 @@
-import TroonAtomicStandard from 0x3a57788afdda9ea7
-import NonFungibleToken from 0x631e88ae7f1d7c20
+
+import TroonAtomicStandard from "../contracts/TroonAtomicStandard.cdc"
+import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 
 transaction() {
     prepare(signer: AuthAccount) {

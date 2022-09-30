@@ -6,7 +6,6 @@ transaction(templateId: UInt64) {
             (TroonAtomicStandard.NFTMethodsCapabilityPrivatePath)
             .borrow() ?? 
             panic("could not borrow a reference to the NFTMethodsCapability interface")
-     
         actorResource.removeTemplateById(templateId: templateId)
         log("ok")
     }

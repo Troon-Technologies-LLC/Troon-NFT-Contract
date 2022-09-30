@@ -9,6 +9,7 @@ pub fun main(address: Address) : [UInt64] {
     let account1 = getAccount(address)
     // Find the public Receiver capability for their Collections
     let acct1Capability =  account1.getCapability(TroonAtomicStandard.CollectionPublicPath)
+
                            .borrow<&{TroonAtomicStandard.TroonAtomicStandardCollectionPublic}>()
                             ??panic("could not borrow receiver reference ")
     return  acct1Capability.getIDs()
